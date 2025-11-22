@@ -8,6 +8,7 @@ import ReaderEvents from "./components/EventsList";
 import ReaderLoansPage from "./pages/reader/ReaderLoansPage";
 
 import { ProtectedRoute } from "./routes/ProtectedRoutes";
+import EventsPage from "./pages/EventPage";
 
 export default function App() {
   return (
@@ -27,15 +28,6 @@ export default function App() {
         />
 
         <Route
-          path="/reader/events"
-          element={
-            <ProtectedRoute role="reader">
-              <ReaderEvents />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
           path="/reader/my-books"
           element={
             <ProtectedRoute role="reader">
@@ -44,12 +36,32 @@ export default function App() {
           }
         />
 
+        <Route
+          path="/reader/events"
+          element={
+            <ProtectedRoute role="reader">
+              <EventsPage />
+            </ProtectedRoute>
+          }
+        />
+
+
+
         {/* --- Library routes --- */}
         <Route
           path="/library/catalog"
           element={
             <ProtectedRoute role="library">
               <LibraryCatalog />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/library/events"
+          element={
+            <ProtectedRoute role="library">
+              <EventsPage />
             </ProtectedRoute>
           }
         />

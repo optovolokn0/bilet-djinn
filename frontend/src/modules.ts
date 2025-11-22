@@ -65,22 +65,34 @@ export interface IRenewRequest {
 }
 
 // src/modules/events.ts
-
 export interface IEvent {
   id: number;
   title: string;
-  description?: string | null;
-  image_url?: string | null;
-  date_time: string;       // ISO формат
+  description: string;
+  start_at: string;
+  duration_minutes: number;
+  capacity: number;
+  cover_url: string;
+  cover_image: string | null;
+  created_by: number;
+  participants_count: number;
+  seats_left: number;
+}
+
+export interface IEventWithAvailability {
+  id: number;
+  title: string;
+  description: string;
+  date_time: string;
+  duration_minutes: number;
   total_seats: number;
   booked_seats: number;
-  created_by?: number | null; // id библиотекаря, создавшего мероприятие
+  free_seats: number;
+  is_full: boolean;
+  cover_url: string;
+  created_by: number;
   created_at: string;
   updated_at: string;
 }
 
-// Вспомогательные поля для UI
-export interface IEventWithAvailability extends IEvent {
-  free_seats: number;  // total_seats - booked_seats
-  is_full: boolean;    // true, если мест нет
-}
+
