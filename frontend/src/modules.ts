@@ -97,4 +97,23 @@ export interface IEventWithAvailability {
 }
 
 
+export interface IEventFromApi {
+  id: number;
+  title: string;
+  description: string;
+  start_at: string;
+  duration_minutes: number;
+  capacity: number;
+  cover_url: string | null;
+  cover_image: string | null;
+  created_by: number;
+  participants_count: number;
+  seats_left: number;
+}
+
+export interface IEventUI extends IEventFromApi {
+  date_time: string;       // дублируем start_at для удобства UI
+  is_full: boolean;
+  is_registered?: boolean; // для текущего пользователя
+}
 
