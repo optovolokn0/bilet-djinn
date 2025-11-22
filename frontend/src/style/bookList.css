@@ -21,7 +21,7 @@
     font-weight: normal;
     font-size: 16px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    
+
 
     /* ключ, который выравнивает высоту */
     /* height: 100%; */
@@ -47,7 +47,7 @@
     /* текст сверху, кнопка снизу */
 }
 
-.book-container .container{
+.book-container .container {
     margin-bottom: 10px;
 }
 
@@ -65,8 +65,8 @@
     border: 2px solid #A8C0A6;
     border-radius: 15px;
     font-family: 'Mulish';
-} 
+}
 
-.input:focus{
+.input:focus {
     outline: none;
 }
