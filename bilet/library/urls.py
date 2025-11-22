@@ -3,7 +3,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     BookGroupViewSet, BookCopyViewSet, LoanViewSet, RenewRequestViewSet,
-    EventViewSet, AnalyticsViewSet
+    EventViewSet, AnalyticsViewSet, UserViewSet
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -18,6 +18,7 @@ router.register(r"book-copies", BookCopyViewSet, basename="bookcopy")
 router.register(r"loans", LoanViewSet, basename="loan")
 router.register(r"renew-requests", RenewRequestViewSet, basename="renewrequest")
 router.register(r"events", EventViewSet, basename="event")
+router.register(r"users", UserViewSet, basename="user")
 
 urlpatterns = [
     path("api/auth/reader/login/", ReaderLoginView.as_view()),

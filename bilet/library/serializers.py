@@ -4,6 +4,7 @@ from .models import (
     User, Author, Genre, BookGroup, BookCopy, Loan, RenewRequest, Event, Notification
 )
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -77,33 +78,38 @@ class BookGroupSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "username", "email", "first_name", "last_name", "role", "phone", "birth_date")
+        fields = ("id", "username", "email", "first_name", "last_name", "role", "phone", "birth_date", "password")
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(read_only=True)
     class Meta:
         model = User
         fields = (
             "id", 
             "ticket_number",
             "contract_number",
-            "password",
             "first_name",
             "last_name",
             "phone",
             "birth_date",
             "role",
+            "password"
         )
         extra_kwargs = {
-            "password": {"write_only": True},
+            
             "role": {"default": "reader"},
         }
 
     def create(self, validated_data):
-        password = validated_data.pop("password")
+        random_password = get_random_string(
+            length=10,
+            allowed_chars="abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+        )
         user = User(**validated_data)
-        user.set_password(password)
+        user.set_password(random_password)
         user.save()
+        user.password = random_password
         return user
 
 class LoanSerializer(serializers.ModelSerializer):
@@ -121,7 +127,6 @@ class LoanSerializer(serializers.ModelSerializer):
         reader_id = validated_data.pop("reader_id")
         copy = BookCopy.objects.select_for_update().get(id=copy_id)
         reader = User.objects.get(id=reader_id)
-        # Basic availability and age checks should be performed in view, but keep minimal here.
         loan = Loan.objects.create(copy=copy, reader=reader, **validated_data)
         copy.status = "issued"
         copy.save()
