@@ -140,28 +140,28 @@ const LoginPage = () => {
                 </div>
 
                 {/* Чекбокс "Библиотекарь" (Добавлен в дизайн) */}
-                <div style={{ marginTop: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <input
                         id="is-library"
                         type="checkbox"
                         checked={isLibrary}
                         onChange={() => setIsLibrary(!isLibrary)}
-                        style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                        style={{ width: '16px', height: '16px', cursor: 'pointer'}}
                     />
-                    <label htmlFor="is-library" style={{ fontSize: '14px', cursor: 'pointer', userSelect: 'none' }}>
+                    <label htmlFor="is-library" style={{ fontSize: '16px', cursor: 'pointer', userSelect: 'none', fontWeight: '700' }}>
                         Войти как библиотекарь
                     </label>
                 </div>
 
                 {/* Вывод ошибки */}
                 {error && (
-                    <div style={{ color: "#d32f2f", fontSize: "14px", marginTop: "10px", textAlign: 'center' }}>
+                    <div style={{ color: "#d32f2f", fontSize: "16px", textAlign: 'center' }}>
                         {error}
                     </div>
                 )}
 
                 {/* Кнопка */}
-                <button className="btn" type="submit" style={{ marginTop: '20px' }}>
+                <button className="btn" type="submit" style={{ marginTop: '0' }}>
                     Войти
                 </button>
 
