@@ -14,9 +14,19 @@ from rest_framework.exceptions import ValidationError, PermissionDenied
 from datetime import timedelta
 
 # Простая роль-пермишен проверка (можно заменить на более серьёзную систему)
-def require_role(user, role):
-    if not user.is_authenticated or getattr(user, "role", None) != role:
-        raise PermissionDenied(detail=f"Требуется роль {role}")
+def require_role(user, role_or_roles):
+    """Require that `user` has one of role_or_roles (str or iterable).
+
+    Raises PermissionDenied if not matched.
+    """
+    if not user.is_authenticated:
+        raise PermissionDenied(detail=f"Требуется роль {role_or_roles}")
+    if isinstance(role_or_roles, (list, tuple, set)):
+        if getattr(user, "role", None) not in role_or_roles:
+            raise PermissionDenied(detail=f"Требуется одна из ролей: {', '.join(role_or_roles)}")
+    else:
+        if getattr(user, "role", None) != role_or_roles:
+            raise PermissionDenied(detail=f"Требуется роль {role_or_roles}")
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -29,8 +39,24 @@ class UserViewSet(viewsets.ModelViewSet):
         return UserSerializer
 
     def perform_create(self, serializer):
-        require_role(self.request.user, "library")
+        # Only library staff or admin may create readers or library staff.
+        # Creating an admin must be done by an admin.
+        requested_role = serializer.validated_data.get("role", "reader")
+        if requested_role == "admin":
+            require_role(self.request.user, "admin")
+        else:
+            # allow library staff to create readers and allow admin too
+            require_role(self.request.user, ("library", "admin"))
         return serializer.save()
+
+    def destroy(self, request, *args, **kwargs):
+        # Admins can delete users with role 'library' and 'reader' only.
+        target = self.get_object()
+        if target.role in ("library", "reader"):
+            require_role(request.user, "admin")
+            return super().destroy(request, *args, **kwargs)
+        # Prevent deleting admins (or unknown roles) via this endpoint
+        raise PermissionDenied(detail="Недостаточно прав для удаления данного пользователя")
 
 class BookGroupViewSet(viewsets.ModelViewSet):
     queryset = BookGroup.objects.prefetch_related("authors", "genres", "copies").all()
@@ -129,7 +155,7 @@ class RenewRequestViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def approve(self, request, pk=None):
-        require_role(request.user, "library")
+        require_role(request.user, ("library", "admin"))
         rr = self.get_object()
         if rr.status != "pending":
             return Response({"detail": "Старая заявка"}, status=400)
@@ -143,7 +169,7 @@ class RenewRequestViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def reject(self, request, pk=None):
-        require_role(request.user, "library")
+        require_role(request.user, ("library", "admin"))
         rr = self.get_object()
         rr.status = "rejected"
         rr.save()

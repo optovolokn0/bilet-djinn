@@ -6,6 +6,7 @@ from django.utils import timezone
 ROLE_CHOICES = (
     ("reader", "Reader"),
     ("library", "LibraryStaff"),
+    ("admin", "Admin"),
 )
 
 LOAN_STATUS = (
@@ -53,6 +54,9 @@ class User(AbstractUser):
 
     def is_library(self):
         return self.role == "library"
+
+    def is_admin(self):
+        return self.role == "admin"
 
 
 class Author(models.Model):
