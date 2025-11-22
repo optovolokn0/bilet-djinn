@@ -89,10 +89,12 @@ export interface IEventWithAvailability {
   booked_seats: number;
   free_seats: number;
   is_full: boolean;
-  cover_url: string;
+  cover_url?: string;
   created_by: number;
   created_at: string;
   updated_at: string;
+  is_registered?: boolean; // новый флаг для текущего пользователя
 }
+
 
 
