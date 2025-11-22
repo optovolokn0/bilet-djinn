@@ -3,9 +3,6 @@
 @import '../src/style/img.css';
 @import '../src/style/btn.css';
 
-@import '../src/style/events';
-
-
 
 body {
     margin: 0;

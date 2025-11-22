@@ -4,7 +4,6 @@ import '../src/App.css'
 import ReaderCatalog from './pages/reader/ReaderCatalog';
 import LibraryCatalog from './pages/library/LibraryCatalog';
 import { ProtectedRoute } from './routes/ProtectedRoutes';
-import EventsList from './components/EventsList';
 import LoginPage from './pages/LoginPage';
 
 
@@ -48,11 +47,6 @@ export default function App() {
         <Route path="/reader/catalog" element={
           <ReaderCatalog />
         } />
-        <Route path="/reader/events" element={
-          <EventsList/>
-        } />
-
-        
 
         {/* Library */}
         <Route path="/library/catalog" element={
