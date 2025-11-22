@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import CreateBookModal from './modals/CreateBookModal';
 // import { auth } from '../App';
 
 export default function Header() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     //   const user = auth.getUser();
     const user = {
         id: 523523,
         role: 'library'
     }
     // const nav = useNavigate();
+
+    const handleOpenModal = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        // *** ГЛАВНОЕ ИЗМЕНЕНИЕ: Отменяем стандартное действие Link ***
+        e.preventDefault();
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <header className="header">
@@ -31,7 +44,15 @@ export default function Header() {
                     </div>
 
                     <div className="catalog">
-                        {user && user.role === 'library' && <Link to="/library/new-book" className="nav-item">Добавить книгу</Link>}
+                        {user && user.role === 'library' && (
+                            <Link
+                                to="/library/new-book" 
+                                className="nav-item" 
+                                onClick={handleOpenModal} 
+                            >
+                                Добавить книгу
+                            </Link>
+                        )}
                     </div>
 
                     <div className="catalog">
@@ -65,6 +86,10 @@ export default function Header() {
 
             </nav>
 
+            <CreateBookModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+            />
         </header>
     );
 }
