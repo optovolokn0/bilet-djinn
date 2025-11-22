@@ -15,6 +15,11 @@
 }
 
 @media (max-width: 820px) {
+    body {
+        font-weight: 800;
+        font-size: 18px;
+    }
+
     .book-list {
         grid-template-columns: repeat(2, 1fr);
     }
