@@ -148,7 +148,7 @@ export default function RegisterReaderPage(): JSX.Element {
 
   return (
     <div className="register-reader-page" style={{ maxWidth: 720, margin: '0 auto', padding: 16 }}>
-      <h2>Регистрация читателя</h2>
+      <h2 style={{textAlign: 'center'}}>Регистрация читателя</h2>
 
       {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
 
@@ -180,7 +180,7 @@ export default function RegisterReaderPage(): JSX.Element {
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
           <div className="form-group">
             <label className="form-label">Номер читательского билета</label>
             <input className="input" value={ticketNumber} onChange={e => setTicketNumber(e.target.value)} required />
