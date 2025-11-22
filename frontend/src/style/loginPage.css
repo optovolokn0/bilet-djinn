@@ -1,0 +1,107 @@
+/* loginPage.css */
+
+/* Карточка входа */
+.login-card {
+    max-width: 420px;       /* Ограничиваем ширину, чтобы не растягивалась */
+    width: 100%;
+    margin: 60px auto;      /* Центрируем по горизонтали и добавляем отступ сверху */
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 15px;    /* Скругление как у инпутов */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Тень в стиле book-card */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;              /* Расстояние между заголовком и формой */
+}
+
+
+.login-title {
+    text-align: center;
+    font-size: 32px;
+    color: #A8C0A6;        
+}
+
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;              
+}
+
+
+.username, 
+.password {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;             
+}
+
+
+.label {
+    font-weight: 700;
+    margin-left: 8px;       
+}
+
+.login-card .input {
+    width: 100%;
+    box-sizing: border-box; 
+}
+
+
+.login-form .btn {
+    margin-top: 10px;
+    padding: 12px 10px;     
+}
+
+
+
+
+.hint {
+    font-size: 14px;
+    font-weight: normal;
+    text-align: center;
+    color: #7d7d7d;
+    line-height: 1.4;
+    margin-top: 10px;
+}
+
+/* -------------------------------------- */
+/* Стили для глазика */
+/* -------------------------------------- */
+
+/* Контейнер для поля ввода и глазика */
+.password-input-wrapper {
+    position: relative; /* Создаем контекст для абсолютного позиционирования кнопки */
+}
+
+/* Скрываем стандартный фокус у кнопки, оставляя только фокус у инпута */
+.password-input-wrapper .input:focus + .toggle-password-btn {
+    outline: none; /* Убираем, если не хотим, чтобы кнопка реагировала на фокус инпута */
+}
+
+/* Стили для кнопки-переключателя (глазика) */
+.toggle-password-btn {
+    position: absolute;
+    top: 55%; /* Центрируем по вертикали */
+    right: 15px; /* Отступ от правого края */
+    transform: translateY(-50%);
+    
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    
+    /* Цвет иконки. Используем более нейтральный, чем основной цвет кнопки */
+    color: #888; 
+    transition: color 0.2s;
+    z-index: 10; /* Убедимся, что кнопка поверх инпута */
+}
+
+.toggle-password-btn:hover {
+    color: #A8C0A6; /* Акцентный цвет при наведении */
+}
+
+/* Дополнительно уменьшаем отступ справа у самого инпута, чтобы текст не залезал под глазик */
+.password-input-wrapper .input {
+    padding-right: 40px; 
+}

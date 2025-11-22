@@ -1,0 +1,154 @@
+=== CLIENT ATTRS ===
+DEFAULT_DATABASE
+DEFAULT_HOST
+DEFAULT_PORT
+__aenter__
+__aexit__
+__bool__
+__class__
+__delattr__
+__dir__
+__doc__
+__enter__
+__eq__
+__exit__
+__firstlineno__
+__format__
+__ge__
+__getattribute__
+__getstate__
+__gt__
+__hash__
+__init__
+__init_subclass__
+__le__
+__lt__
+__module__
+__ne__
+__new__
+__reduce__
+__reduce_ex__
+__repr__
+__setattr__
+__sizeof__
+__slots__
+__static_attributes__
+__str__
+__subclasshook__
+_connect
+_stack
+actualize_record
+check_connection
+client_id
+connect
+connect_async
+connected
+create_database
+create_dictionary
+database
+delete_database
+delete_record
+disconnect
+disconnect_async
+execute
+execute_ansi
+execute_async
+execute_forget
+format_record
+format_record_async
+format_records
+fulltext_search
+fulltext_search_async
+get_database_info
+get_max_mfn
+get_max_mfn_async
+get_server_stat
+get_server_version
+host
+ini_file
+last_error
+list_databases
+list_files
+list_processes
+list_users
+monitor_operation
+near_master
+nop
+nop_async
+parse_connection_string
+password
+pop_database
+port
+print_table
+push_database
+query_id
+read_alphabet_table
+read_binary_file
+read_ini_file
+read_menu
+read_opt_file
+read_par_file
+read_postings
+read_raw_record
+read_record
+read_record_async
+read_record_postings
+read_records
+read_search_scenario
+read_terms
+read_text_file
+read_text_file_async
+read_text_stream
+read_tree_file
+read_uppercase_table
+reload_dictionary
+reload_master_file
+require_alphabet_table
+require_menu
+require_opt_file
+require_par_file
+require_text_file
+require_tree_file
+restart_server
+restart_server_async
+search
+search_all
+search_async
+search_count
+search_count_async
+search_ex
+search_format
+search_read
+server_version
+throw_on_error
+to_connection_string
+truncate_database
+undelete_record
+unlock_database
+unlock_records
+update_ini_file
+update_user_list
+username
+workstation
+write_raw_record
+write_record
+write_record_async
+write_records
+write_text_file
+
+=== PROBING COMMON METHODS ===
+-- get_server_version: <cbsvibpyirbis.version.ServerVersion object at 0x0000018075DE4AD0>
+-- server_version: '64.2018.1 +'
+-- get_version: None
+-- version: None
+-- list_databases: []
+-- get_databases: None
+-- list_formats: None
+-- get_formats: None
+-- get_max_mfn: 3
+-- max_mfn: None
+-- read_raw_record: None
+-- read_record: ERROR: 
+-- read_records: ERROR: 
+-- format_record: ERROR: Connection.format_record() missing 2 required positional arguments: 'script' and 'record'
+-- read_record_header: None
