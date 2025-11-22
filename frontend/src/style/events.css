@@ -1,81 +1,45 @@
 .events-list {
     margin-top: 20px;
-    /* margin-bottom: 20px; */
     display: flex;
     flex-direction: column;
     gap: 30px;
+    width: 100%;
+    padding: 0; /* убираем горизонтальные паддинги */
+    box-sizing: border-box;
 }
 
 .event-card {
     display: flex;
-    width: 100%;
+    flex-direction: row;
+    width: 100%;       /* резиновая ширина */
     gap: 20px;
     padding: 16px;
     border-radius: 12px;
-
     background: #fff;
     border: 1px solid #e5e7eb;
-
-    /* --- Тень как у карточек книг --- */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
+    overflow: hidden;
+    box-sizing: border-box; /* важно, чтобы padding не ломал ширину */
 }
 
-.event-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+.event-img {
+    flex-shrink: 0;
+    width: 35%;
+    max-width: 400px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
 }
-
 
 .event-text {
-    width: 100%;
+    flex: 1;
+    min-width: 0; /* предотвращает выход текста за карточку */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.event-title {
-    margin: 5px;
-    font-size: 32px;
-}
+.event-btn { margin-bottom: 20px; max-width: 220px; } .events-page .main-btn { padding: 6px 12px; cursor: pointer; background-color: white; color: #111; transition: background-color 0.2s, border-color 0.2s, color 0.2s; } .events-page .main-btn:hover:not(.active) { background-color: #e5e7eb; /* чуть темнее при наведении */ }
 
-.event-descr {
-    margin-bottom: 10px;
-    font-weight: normal;
-    font-size: 18px;
-}
 
-.event-datetime {
-    margin-bottom: 10px;
-    font-weight: normal;
-    font-size: 18px;
-}
-
-.event-count-places {
-    margin-bottom: 15px;
-    font-weight: normal;
-    font-size: 18px;
-}
-
-.event-img {
-    height: 250px;
-    width: 400px;
-    object-fit: cover;
-}
-
-.event-btn {
-    margin-bottom: 20px;
-    max-width: 220px;
-}
-
-.events-page .main-btn {
-    padding: 6px 12px;
-    cursor: pointer;
-    background-color: white; 
-    color: #111;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
-}
-
-.events-page .main-btn:hover:not(.active) {
-    background-color: #e5e7eb; /* чуть темнее при наведении */
-}

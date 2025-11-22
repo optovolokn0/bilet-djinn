@@ -10,6 +10,7 @@ import ReaderLoansPage from "./pages/reader/ReaderLoansPage";
 import { ProtectedRoute } from "./routes/ProtectedRoutes";
 import EventsPage from "./pages/EventPage";
 import MapPage from "./pages/reader/MapPage";
+import RegisterReaderPage from "./pages/library/RegisterReaderPage";
 
 export default function App() {
   return (
@@ -72,6 +73,15 @@ export default function App() {
           element={
             <ProtectedRoute role="library">
               <EventsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/library/register-reader"
+          element={
+            <ProtectedRoute role="library">
+              <RegisterReaderPage/>
             </ProtectedRoute>
           }
         />
