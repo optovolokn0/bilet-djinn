@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAppSelector } from '../../hooks';
 import type { IBookGroup } from '../../modules';
 // Импортируем функции API
-import { fetchBookGroups, createBookGroup, createBookCopy } from '../../api/books';
+import { fetchBookGroups, createBookGroup, updateBookGroupImage, createBookCopy } from '../../api/books';
 
 interface CreateBookModalProps {
     isOpen: boolean;
@@ -12,7 +12,6 @@ interface CreateBookModalProps {
 
 export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBookModalProps) {
     const token = useAppSelector(state => state.auth.access);
-
     const titleContainerRef = useRef<HTMLDivElement>(null);
 
     // --- Состояние формы ---
@@ -24,7 +23,6 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
 
     // Новые поля
     const [description, setDescription] = useState('');
-    // ИЗМЕНЕНИЕ 1: Вместо URL храним файл
     const [coverFile, setCoverFile] = useState<File | null>(null);
     const [genre, setGenre] = useState('');
     const [ageLimit, setAgeLimit] = useState('');
@@ -37,8 +35,8 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // --- Состояние экземпляров ---
-    const [copyCount, setCopyCount] = useState<number>(1);
+    // --- Состояние экземпляров (Copy Count - СТРОКА) ---
+    const [copyCount, setCopyCount] = useState<string>('1');
     const [instanceIds, setInstanceIds] = useState<string[]>(['']);
 
     // 1. Загрузка данных при открытии
@@ -53,41 +51,33 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
         return () => { document.body.style.overflow = 'unset'; };
     }, [isOpen, token]);
 
-    // 2. Синхронизация инпутов ID
+    // 2. Синхронизация инпутов ID (преобразуем строку в число)
     useEffect(() => {
+        const count = parseInt(copyCount) || 0;
         setInstanceIds(prevIds => {
-            const newIds = Array(copyCount).fill('');
-            for (let i = 0; i < Math.min(copyCount, prevIds.length); i++) {
+            const newIds = Array(count).fill('');
+            for (let i = 0; i < Math.min(count, prevIds.length); i++) {
                 newIds[i] = prevIds[i];
             }
             return newIds;
         });
     }, [copyCount]);
 
-    // 3. Обработка клика вне контейнера заголовка для закрытия suggestions
+    // 3. Закрытие саджестов по клику вне
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (
-                titleContainerRef.current &&
-                !titleContainerRef.current.contains(event.target as Node)
-            ) {
-                // Скрываем предложения, если клик произошел вне контейнера
+            if (titleContainerRef.current && !titleContainerRef.current.contains(event.target as Node)) {
                 setSuggestions([]);
             }
         };
-
-        // Добавляем слушателя только когда модалка открыта
         if (isOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         }
-
-        // Очистка слушателя
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isOpen]);
 
-    // --- Загрузка списка книг через API ---
     const loadGroups = async () => {
         if (!token) return;
         try {
@@ -98,56 +88,43 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
         }
     };
 
-    // --- Сброс формы ---
     const resetForm = () => {
         setTitle('');
         setAuthor('');
         setIsbn('');
         setYear('');
         setPublisher('');
-        // Сброс новых полей
         setDescription('');
-        setCoverFile(null); // Сброс файла
+        setCoverFile(null);
         setGenre('');
         setAgeLimit('');
-
         setSelectedGroup(null);
         setSuggestions([]);
-        setCopyCount(1);
+        setCopyCount('1'); // Сброс на строку '1'
         setInstanceIds(['']);
         setError(null);
         setIsLoading(false);
     };
 
     const handleCreateNewWithTitle = () => {
-        // Сохраняем: title, author, genre
-        // Сбрасываем: все, что связано с группой (selectedGroup, suggestions)
-        // Сбрасываем: технические/дополнительные поля (isbn, year, publisher, description, ageLimit, coverFile)
-
         setSelectedGroup(null);
         setSuggestions([]);
-
         setIsbn('');
         setYear('');
         setPublisher('');
         setDescription('');
         setAgeLimit('');
         setCoverFile(null);
-
-        // Оставляем title, author, genre, copyCount, instanceIds
         setError(null);
         setIsLoading(false);
     };
 
-    // --- Хендлеры инпутов ---
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setTitle(val);
-
         if (selectedGroup && val !== selectedGroup.title) {
             setSelectedGroup(null);
         }
-
         if (val.trim().length > 1) {
             const matches = allGroups.filter(bg =>
                 bg.title.toLowerCase().includes(val.toLowerCase())
@@ -165,42 +142,35 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
         setIsbn(group.isbn || '');
         setYear(group.year?.toString() || '');
         setPublisher(group.publisher || '');
-
-        // Автозаполнение
         setDescription(group.description || '');
         setAgeLimit(group.age_limit?.toString() || '');
-        // Жанры
         setGenre(group.genres ? group.genres.map(g => g.name).join(', ') : '');
-
-        // При выборе существующей группы мы обычно не меняем обложку, 
-        // но можно оставить null или как-то обозначить, что обложка есть.
         setCoverFile(null);
-
         setSuggestions([]);
-        setCopyCount(1);
+        setCopyCount('1');
     };
 
+    // --- ЛОГИКА INPUT (String based) ---
     const handleCopyCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let val = e.target.value;
+        const val = e.target.value;
 
-        // 1. Принудительное удаление ведущего нуля, если за ним следует другая цифра
-        // Например: "05" -> "5", "007" -> "7". Но "0" остается "0".
-        if (val.length > 1 && val.startsWith('0')) {
-            val = val.replace(/^0+/, ''); // Удаляем один или несколько ведущих нулей
-        }
+        // Разрешаем только цифры
+        const numericRegex = /^\d*$/;
+        if (!numericRegex.test(val)) return;
 
-        // 2. Если пользователь стер все (пустая строка) -> ставим 0
+        // Если пусто - ставим пусто
         if (val === '') {
-            setCopyCount(0);
+            setCopyCount('');
             return;
         }
 
-        // 3. Преобразуем в число. (Если val уже "5" из "05", то все ок)
-        const value = parseInt(val, 10);
-
-        if (!isNaN(value) && value >= 0) {
-            setCopyCount(value);
+        // Убираем ведущие нули (если это не просто "0")
+        let normalizedVal = val;
+        if (val.length > 1 && val.startsWith('0')) {
+            normalizedVal = val.replace(/^0+/, '');
         }
+
+        setCopyCount(normalizedVal);
     };
 
     const handleInstanceIdChange = (index: number, value: string) => {
@@ -219,8 +189,10 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
         setError(null);
         setIsLoading(true);
 
+        const finalCopyCount = parseInt(copyCount) || 0;
         const validInstanceIds = instanceIds.filter(id => id.trim() !== '');
-        if (validInstanceIds.length === 0) {
+
+        if (validInstanceIds.length === 0 || finalCopyCount === 0) {
             setError("Введите хотя бы один ID экземпляра");
             setIsLoading(false);
             return;
@@ -232,45 +204,50 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
             if (selectedGroup) {
                 targetGroupId = selectedGroup.id;
             } else {
-                // ИЗМЕНЕНИЕ: Формируем FormData с правильными ключами для массивов
-                const formData = new FormData();
+                // --- ШАГ 1: Создаем книгу (JSON) ---
 
-                formData.append('title', title);
-                formData.append('subtitle', '');
-                // ... (остальные append'ы полей, не являющихся массивами)
-                formData.append('isbn', isbn);
-                formData.append('publisher', publisher);
-                formData.append('year', (parseInt(year) || 0).toString());
-                formData.append('description', description || "Описание отсутствует");
-                formData.append('age_limit', (parseInt(ageLimit) || 0).toString());
+                // Подготовка авторов
+                const authorsList = author
+                    .split(',')
+                    .map(a => a.trim())
+                    .filter(a => a.length > 0)
+                    .map(name => ({ name }));
 
-                if (coverFile) {
-                    formData.append('cover_image', coverFile);
-                }
-                formData.append('created_at', new Date().toISOString());
+                // Подготовка жанров
+                const genresList = genre
+                    .split(',')
+                    .map(g => g.trim())
+                    .filter(g => g.length > 0)
+                    .map(name => ({ name }));
 
-                // --- ИСПРАВЛЕНИЕ: Сериализация Авторов в JSON строку ---
-                const authorsList = author.split(',').map(a => a.trim()).filter(a => a);
-                const authorsJson = authorsList.map(authName => ({ name: authName }));
+                // Payload (Обычный объект JS)
+                const newBookPayload = {
+                    title,
+                    subtitle: '',
+                    isbn,
+                    publisher,
+                    year: parseInt(year) || 0,
+                    description: description || "Описание отсутствует",
+                    age_limit: parseInt(ageLimit) || 0,
+                    created_at: new Date().toISOString(),
+                    authors: authorsList,
+                    genres: genresList,
+                    cover_image: null // Пока null
+                };
 
-                // Передаем как JSON строку
-                formData.append('authors', JSON.stringify(authorsJson));
-
-
-                // --- ИСПРАВЛЕНИЕ: Сериализация Жанров в JSON строку ---
-                const genresList = genre.split(',').map(g => g.trim()).filter(g => g);
-                const genresJson = genresList.map(genName => ({ name: genName }));
-
-                // Передаем как JSON строку
-                formData.append('genres', JSON.stringify(genresJson));
-
-
-                // Отправляем FormData в API
-                const newGroup = await createBookGroup(token, formData);
+                // Отправляем JSON
+                const newGroup = await createBookGroup(token, newBookPayload);
                 targetGroupId = newGroup.id;
+
+                // --- ШАГ 2: Загружаем обложку (FormData/PATCH) ---
+                if (coverFile) {
+                    const imageFormData = new FormData();
+                    imageFormData.append('cover_image', coverFile);
+                    await updateBookGroupImage(token, targetGroupId, imageFormData);
+                }
             }
 
-            // Создаем копии (здесь остается JSON, так как файлы не нужны)
+            // --- ШАГ 3: Создаем копии ---
             const copyPromises = validInstanceIds.map(copyId =>
                 createBookCopy(token, {
                     id: parseInt(copyId),
@@ -318,7 +295,6 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
                         </div>
                     )}
 
-                    {/* --- Основной блок --- */}
                     <div className="form-group" style={{ position: 'relative' }} ref={titleContainerRef}>
                         <label className="form-label">Название книги</label>
                         <input
@@ -397,7 +373,6 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
                         </div>
                     </div>
 
-                    {/* ИЗМЕНЕНИЕ 3: Input file */}
                     <div className="form-group">
                         <label className="form-label">Загрузить обложку</label>
                         <input
@@ -406,7 +381,7 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
                             accept="image/*"
                             onChange={e => setCoverFile(e.target.files?.[0] || null)}
                             disabled={!!selectedGroup}
-                            style={{ paddingTop: '8px' }} // Небольшой фикс для input type=file
+                            style={{ paddingTop: '8px' }}
                         />
                     </div>
 
@@ -423,7 +398,6 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
                         />
                     </div>
 
-                    {/* --- Технические поля --- */}
                     <div className="form-group">
                         <label className="form-label">ISBN</label>
                         <input
@@ -456,10 +430,10 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
                         />
                     </div>
 
-                    {copyCount > 0 && (
+                    {(parseInt(copyCount) || 0) > 0 && (
                         <div className="instance-ids-container">
                             <label className="form-label" style={{ marginBottom: '5px', display: 'block' }}>
-                                Инвентарный номер (ID) {copyCount > 1 ? `для каждого из ${copyCount} экземпляров` : 'экземпляра'}
+                                Инвентарный номер (ID) {parseInt(copyCount) > 1 ? `для каждого из ${copyCount} экземпляров` : 'экземпляра'}
                             </label>
 
                             {instanceIds.map((id, index) => (
@@ -481,7 +455,7 @@ export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBo
                         type="submit"
                         className="btn"
                         style={{ marginTop: '10px' }}
-                        disabled={isLoading || copyCount === 0}
+                        disabled={isLoading || (parseInt(copyCount) || 0) === 0}
                     >
                         {isLoading ? 'Сохранение...' : (selectedGroup ? 'Добавить экземпляр' : 'Создать книгу')}
                     </button>

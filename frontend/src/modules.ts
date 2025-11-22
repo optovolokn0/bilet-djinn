@@ -27,7 +27,10 @@ export interface IBookGroup {
   publisher?: string | null;
   year?: number | null;
   description?: string | null;
-  cover_url?: string | null;
+  cover_image?: string | null; // URL для обложки (важно!)
+  copies_count: number; // Общее количество копий
+  available_count: number; // Доступное количество копий (важно!)
+
   age_limit?: number | null;
   created_at: string;
   updated_at: string;
