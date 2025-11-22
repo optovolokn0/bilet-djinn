@@ -27,7 +27,7 @@ export default function Header() {
                     </div>
 
                     <div className="catalog">
-                        {user && user.role === 'library' && <Link to="/library/issued" className="nav-item">Выданные</Link>}
+                        {user && user.role === 'library' && <Link to="/library/issued" className="nav-item">Выданные книги</Link>}
                     </div>
 
                     <div className="catalog">
