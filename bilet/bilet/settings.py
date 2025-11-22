@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_spectacular',
     'library',
 ]
 
@@ -96,6 +97,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
+    # OpenAPI schema generation
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SIMPLE_JWT = {
@@ -146,3 +149,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Settings for drf-spectacular (OpenAPI / Swagger)
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Bilet Library API",
+    "DESCRIPTION": "OpenAPI schema for the Bilet library backend",
+    "VERSION": "1.0.0",
+    # Optional: adjust other settings as needed
+}
