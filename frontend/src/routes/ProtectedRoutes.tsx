@@ -1,22 +1,20 @@
-import React, { type JSX } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAppSelector } from '../hooks';
+import { Navigate } from "react-router-dom";
+import { useAppSelector } from "../hooks";
+import type { JSX } from "react";
 
-export const ProtectedRoute = ({
+export function ProtectedRoute({
   children,
-  role,
+  role
 }: {
   children: JSX.Element;
-  role?: 'reader' | 'library' | 'admin';
-}) => {
-  const auth = useAppSelector((s) => s.auth);
+  role?: "reader" | "library";
+}) {
+  const user = useAppSelector((s) => s.auth.user);
 
-  if (!auth.user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/login" replace />;
 
-  if (role && auth.user.role !== role) {
-    if (auth.user.role === 'reader') return <Navigate to="/reader/catalog" replace />;
-    if (auth.user.role === 'library') return <Navigate to="/library/catalog" replace />;
-  }
+  if (role && user.role !== role)
+    return <Navigate to={`/${user.role}/catalog`} replace />;
 
   return children;
-};
+}
