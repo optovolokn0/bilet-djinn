@@ -3,6 +3,7 @@ import '../src/App.css'
 // import Login from './pages/Login';
 import ReaderCatalog from './pages/reader/ReaderCatalog';
 import LibraryCatalog from './pages/library/LibraryCatalog';
+import LoginPage from './pages/LoginPage';
 
 
 // import ReaderBook from './pages/reader/BookPage';
@@ -39,10 +40,13 @@ export default function App() {
     <main>
       <Routes>
 
+        <Route path="/login" element={<LoginPage />} />
+
         {/* Reader */}
         <Route path="/reader/catalog" element={
             <ReaderCatalog />
         } />
+        
 
         {/* Library */}
         <Route path="/library/catalog" element={
