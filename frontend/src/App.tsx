@@ -5,6 +5,7 @@ import ReaderCatalog from './pages/reader/ReaderCatalog';
 import LibraryCatalog from './pages/library/LibraryCatalog';
 import { ProtectedRoute } from './routes/ProtectedRoutes';
 import LoginPage from './pages/LoginPage';
+import ReaderEvents from './components/EventsList';
 
 
 // import ReaderBook from './pages/reader/BookPage';
@@ -46,6 +47,9 @@ export default function App() {
         {/* Reader */}
         <Route path="/reader/catalog" element={
           <ReaderCatalog />
+        } />
+        <Route path="/reader/events" element={
+          <ReaderEvents />
         } />
 
         {/* Library */}
