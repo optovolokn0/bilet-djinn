@@ -1,18 +1,22 @@
-// src/routes/ProtectedRoute.tsx
-import React from 'react';
+import React, { type JSX } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAppSelector } from '../hooks';
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-  role: 'reader' | 'library';
-}
+export const ProtectedRoute = ({
+  children,
+  role,
+}: {
+  children: JSX.Element;
+  role?: 'reader' | 'library' | 'admin';
+}) => {
+  const auth = useAppSelector((s) => s.auth);
 
-export const ProtectedRoute = ({ children, role }: ProtectedRouteProps) => {
-  const { user } = useAuth();
+  if (!auth.user) return <Navigate to="/login" replace />;
 
-  if (!user) return <Navigate to="/login" replace />;
-  if (user.role !== role) return <Navigate to="/" replace />;
+  if (role && auth.user.role !== role) {
+    if (auth.user.role === 'reader') return <Navigate to="/reader/catalog" replace />;
+    if (auth.user.role === 'library') return <Navigate to="/library/catalog" replace />;
+  }
 
-  return <>{children}</>;
+  return children;
 };
