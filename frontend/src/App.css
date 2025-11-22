@@ -8,6 +8,8 @@
 @import '../src/style/searchBar.css';
 @import '../src/style/loans.css';
 @import '../src/style/modal.css';
+@import '../src/style/map.css';
+
 
 html {
     /* Скрываем скроллбар в WebKit (Chrome, Safari) */
