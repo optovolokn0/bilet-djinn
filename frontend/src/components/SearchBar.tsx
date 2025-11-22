@@ -7,7 +7,7 @@ export default function SearchBar({ value, onChange, placeholder }:
       value={value}
       onChange={e => onChange(e.target.value)}
       placeholder={placeholder || 'Поиск'}
-      className="w-full p-2 border rounded"
+      className="input search-input"
     />
   );
 }

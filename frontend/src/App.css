@@ -1,4 +1,9 @@
 @import '../src/style/header.css';
+@import '../src/style/bookList.css';
+@import '../src/style/img.css';
+@import '../src/style/btn.css';
+
+
 
 body {
     margin: 0;
@@ -9,7 +14,19 @@ body {
     font-size: 22px;
 }
 
-a{
+/* Центрируем main и задаём максимальную ширину */
+main {
+  max-width: 1260px;   /* максимальная ширина контента */
+  width: 100%;         /* чтобы на маленьких экранах занимал всю ширину */
+  margin: 0 auto 30px;      /* центрирование по горизонтали */
+  padding: 0 16px;     /* боковые отступы для мобильных */
+}
+
+a {
     color: black;
     text-decoration: none;
+}
+
+p{
+    margin: 0;
 }

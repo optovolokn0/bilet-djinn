@@ -1,0 +1,55 @@
+/* Контейнер каталога книг */
+.book-catalog {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    /* отступ между поиском и списком */
+}
+
+.book-catalog.title{
+    margin: 0;
+}
+
+/* Грид списка книг */
+.book-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    /* адаптивный грид */
+    gap: 24px;
+    /* расстояние между карточками */
+    justify-content: center;
+    /* центрируем грид */
+}
+
+/* Карточка книги */
+.book-card {
+    height: 425px;
+    width: 200px;
+    padding: 12px;
+    border-radius: 4px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-weight: normal;
+    font-size: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* плавный переход */
+    cursor: pointer;
+    /* чтобы показывать интерактивность */
+}
+
+
+.book-card:hover {
+  transform: scale(1.05); /* немного увеличиваем */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* добавим тень при наведении */
+}
+
+.input{
+    width: 480px;
+    padding: 12px 16px;
+    border: 2px solid #A8C0A6;
+    border-radius: 15px;
+    font-family: 'Mulish';
+} 

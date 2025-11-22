@@ -21,6 +21,8 @@ export interface IBookGroup {
   id: number;
   title: string;
   subtitle?: string | null;
+  authors: IAuthor[];   // вместо author: string
+  genres?: IGenre[];    // для фильтров по жанрам
   isbn?: string | null;
   publisher?: string | null;
   year?: number | null;

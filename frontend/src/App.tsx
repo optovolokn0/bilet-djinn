@@ -2,7 +2,10 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import '../src/App.css'
 // import Login from './pages/Login';
-import ReaderCatalog from './pages/reader/Catalog';
+import ReaderCatalog from './pages/reader/ReaderCatalog';
+import LibraryCatalog from './pages/library/LibraryCatalog';
+import { ProtectedRoute } from './routes/ProtectedRoutes';
+import LoginPage from './pages/LoginPage';
 // import ReaderBook from './pages/reader/BookPage';
 // import ReaderAccount from './pages/reader/Account';
 // import MyBooks from './pages/reader/MyBooks';
@@ -34,24 +37,25 @@ import ReaderCatalog from './pages/reader/Catalog';
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/reader/catalog" element={<ReaderCatalog />}/>
-      {/* <Route path="/" element={<Landing />} /> */}
-      { /*
-      <Route path="/login" element={<Login />} />
+    <main>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
 
-      
-      <Route path="/reader/catalog/book/:bookId" element={<RequireAuth role="reader"><ReaderBook /></RequireAuth>} />
-      <Route path="/reader/account" element={<RequireAuth role="reader"><ReaderAccount /></RequireAuth>} />
-      <Route path="/reader/account/my-books" element={<RequireAuth role="reader"><MyBooks /></RequireAuth>} />
-      <Route path="/reader/account/history" element={<RequireAuth role="reader"><History /></RequireAuth>} />
-      <Route path="/reader/account/extend/:loanId" element={<RequireAuth role="reader"><ExtendLoan /></RequireAuth>} />
+        {/* Reader */}
+        <Route path="/reader/catalog" element={
+          <ProtectedRoute role="reader">
+            <ReaderCatalog />
+          </ProtectedRoute>
+        } />
 
-      <Route path="/library/catalog" element={<RequireAuth role="library"><LibraryCatalog /></RequireAuth>} />
-      <Route path="/library/catalog/book/:bookId" element={<RequireAuth role="library"><LibraryBook /></RequireAuth>} />
-      <Route path="/library/reader/:readerId" element={<RequireAuth role="library"><LibraryReader /></RequireAuth>} />
-      <Route path="/library/issued" element={<RequireAuth role="library"><IssuedCatalog /></RequireAuth>} />
-      <Route path="/library/new-book" element={<RequireAuth role="library"><NewBook /></RequireAuth>} /> */}
-    </Routes>
+        {/* Library */}
+        <Route path="/library/catalog" element={
+          <ProtectedRoute role="library">
+            <LibraryCatalog />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </main>
+
   );
 }
