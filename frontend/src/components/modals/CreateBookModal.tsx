@@ -1,14 +1,20 @@
-import React, { useState, useEffect } from 'react';
-// Импортируем стили, чтобы они применились к разметке ниже
-import { bookGroups } from '../../mocks';
+import React, { useState, useEffect, useRef } from 'react';
+import { useAppSelector } from '../../hooks';
 import type { IBookGroup } from '../../modules';
+// Импортируем функции API
+import { fetchBookGroups, createBookGroup, createBookCopy } from '../../api/books';
 
 interface CreateBookModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onSuccess?: () => void;
 }
 
-export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProps) {
+export default function CreateBookModal({ isOpen, onClose, onSuccess }: CreateBookModalProps) {
+    const token = useAppSelector(state => state.auth.access);
+
+    const titleContainerRef = useRef<HTMLDivElement>(null);
+
     // --- Состояние формы ---
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
@@ -16,30 +22,41 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
     const [year, setYear] = useState('');
     const [publisher, setPublisher] = useState('');
 
-    // --- Состояние логики "Существующая группа vs Новая" ---
+    // Новые поля
+    const [description, setDescription] = useState('');
+    // ИЗМЕНЕНИЕ 1: Вместо URL храним файл
+    const [coverFile, setCoverFile] = useState<File | null>(null);
+    const [genre, setGenre] = useState('');
+    const [ageLimit, setAgeLimit] = useState('');
+
+    // --- Состояние логики поиска ---
+    const [allGroups, setAllGroups] = useState<IBookGroup[]>([]);
     const [suggestions, setSuggestions] = useState<IBookGroup[]>([]);
     const [selectedGroup, setSelectedGroup] = useState<IBookGroup | null>(null);
 
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    // --- Состояние экземпляров ---
     const [copyCount, setCopyCount] = useState<number>(1);
     const [instanceIds, setInstanceIds] = useState<string[]>(['']);
 
-    // 1. ЛОГИКА МОДАЛКИ: Блокировка скролла при открытии
+    // 1. Загрузка данных при открытии
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && token) {
+            loadGroups();
             document.body.style.overflow = 'hidden';
-            resetForm(); // Сбрасываем форму при открытии
+            resetForm();
         } else {
             document.body.style.overflow = 'unset';
         }
         return () => { document.body.style.overflow = 'unset'; };
-    }, [isOpen]);
+    }, [isOpen, token]);
 
-    // 💡 НОВЫЙ ЭФФЕКТ: Синхронизация полей ID с количеством копий
+    // 2. Синхронизация инпутов ID
     useEffect(() => {
-        // Создаем новый массив ID, основываясь на новом copyCount
         setInstanceIds(prevIds => {
             const newIds = Array(copyCount).fill('');
-            // Копируем существующие значения, если они есть
             for (let i = 0; i < Math.min(copyCount, prevIds.length); i++) {
                 newIds[i] = prevIds[i];
             }
@@ -47,27 +64,82 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
         });
     }, [copyCount]);
 
-    // 2. ЛОГИКА МОДАЛКИ: Закрытие по клику на фон
-    const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (e.target === e.currentTarget) {
-            onClose();
+    // 3. Обработка клика вне контейнера заголовка для закрытия suggestions
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                titleContainerRef.current &&
+                !titleContainerRef.current.contains(event.target as Node)
+            ) {
+                // Скрываем предложения, если клик произошел вне контейнера
+                setSuggestions([]);
+            }
+        };
+
+        // Добавляем слушателя только когда модалка открыта
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        // Очистка слушателя
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen]);
+
+    // --- Загрузка списка книг через API ---
+    const loadGroups = async () => {
+        if (!token) return;
+        try {
+            const data = await fetchBookGroups(token);
+            setAllGroups(data);
+        } catch (e) {
+            console.error(e);
         }
     };
 
+    // --- Сброс формы ---
     const resetForm = () => {
         setTitle('');
         setAuthor('');
         setIsbn('');
         setYear('');
         setPublisher('');
+        // Сброс новых полей
+        setDescription('');
+        setCoverFile(null); // Сброс файла
+        setGenre('');
+        setAgeLimit('');
+
         setSelectedGroup(null);
         setSuggestions([]);
         setCopyCount(1);
         setInstanceIds(['']);
+        setError(null);
+        setIsLoading(false);
     };
 
-    // --- Логика формы (без изменений) ---
+    const handleCreateNewWithTitle = () => {
+        // Сохраняем: title, author, genre
+        // Сбрасываем: все, что связано с группой (selectedGroup, suggestions)
+        // Сбрасываем: технические/дополнительные поля (isbn, year, publisher, description, ageLimit, coverFile)
 
+        setSelectedGroup(null);
+        setSuggestions([]);
+
+        setIsbn('');
+        setYear('');
+        setPublisher('');
+        setDescription('');
+        setAgeLimit('');
+        setCoverFile(null);
+
+        // Оставляем title, author, genre, copyCount, instanceIds
+        setError(null);
+        setIsLoading(false);
+    };
+
+    // --- Хендлеры инпутов ---
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setTitle(val);
@@ -77,7 +149,7 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
         }
 
         if (val.trim().length > 1) {
-            const matches = bookGroups.filter(bg =>
+            const matches = allGroups.filter(bg =>
                 bg.title.toLowerCase().includes(val.toLowerCase())
             );
             setSuggestions(matches);
@@ -93,22 +165,44 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
         setIsbn(group.isbn || '');
         setYear(group.year?.toString() || '');
         setPublisher(group.publisher || '');
+
+        // Автозаполнение
+        setDescription(group.description || '');
+        setAgeLimit(group.age_limit?.toString() || '');
+        // Жанры
+        setGenre(group.genres ? group.genres.map(g => g.name).join(', ') : '');
+
+        // При выборе существующей группы мы обычно не меняем обложку, 
+        // но можно оставить null или как-то обозначить, что обложка есть.
+        setCoverFile(null);
+
         setSuggestions([]);
         setCopyCount(1);
     };
 
-    // 💡 НОВЫЙ ХЕНДЛЕР: Обновление количества копий
     const handleCopyCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value);
-        // Проверка на корректность и минимальное значение
-        if (!isNaN(value) && value >= 1) {
+        let val = e.target.value;
+
+        // 1. Принудительное удаление ведущего нуля, если за ним следует другая цифра
+        // Например: "05" -> "5", "007" -> "7". Но "0" остается "0".
+        if (val.length > 1 && val.startsWith('0')) {
+            val = val.replace(/^0+/, ''); // Удаляем один или несколько ведущих нулей
+        }
+
+        // 2. Если пользователь стер все (пустая строка) -> ставим 0
+        if (val === '') {
+            setCopyCount(0);
+            return;
+        }
+
+        // 3. Преобразуем в число. (Если val уже "5" из "05", то все ок)
+        const value = parseInt(val, 10);
+
+        if (!isNaN(value) && value >= 0) {
             setCopyCount(value);
-        } else if (e.target.value === '') {
-            setCopyCount(0); // Или 1, в зависимости от требуемой логики
         }
     };
 
-    // 💡 НОВЫЙ ХЕНДЛЕР: Обновление ID конкретного экземпляра
     const handleInstanceIdChange = (index: number, value: string) => {
         setInstanceIds(prevIds => {
             const newIds = [...prevIds];
@@ -117,35 +211,94 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
         });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    // --- SUBMIT ---
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!token) return;
 
-        // 💡 ЛОГИКА: Фильтрация пустых ID перед отправкой
+        setError(null);
+        setIsLoading(true);
+
         const validInstanceIds = instanceIds.filter(id => id.trim() !== '');
-
-        if (selectedGroup) {
-            console.log(`Добавление ${validInstanceIds.length} экземпляров для группы:`, selectedGroup.id);
-            console.log('ID экземпляров:', validInstanceIds);
-            alert(`Успешно добавлено ${validInstanceIds.length} новых экземпляров для книги "${selectedGroup.title}" (ID: ${validInstanceIds.join(', ')})`);
-        } else {
-            console.log('Создание новой группы книг:', { title, author, isbn, year, publisher });
-            console.log('ID экземпляров:', validInstanceIds);
-            alert(`Создана новая книга "${title}" и её ${validInstanceIds.length} экземпляров (ID: ${validInstanceIds.join(', ')})`);
+        if (validInstanceIds.length === 0) {
+            setError("Введите хотя бы один ID экземпляра");
+            setIsLoading(false);
+            return;
         }
 
-        onClose();
+        try {
+            let targetGroupId: number;
+
+            if (selectedGroup) {
+                targetGroupId = selectedGroup.id;
+            } else {
+                // ИЗМЕНЕНИЕ: Формируем FormData с правильными ключами для массивов
+                const formData = new FormData();
+
+                formData.append('title', title);
+                formData.append('subtitle', '');
+                // ... (остальные append'ы полей, не являющихся массивами)
+                formData.append('isbn', isbn);
+                formData.append('publisher', publisher);
+                formData.append('year', (parseInt(year) || 0).toString());
+                formData.append('description', description || "Описание отсутствует");
+                formData.append('age_limit', (parseInt(ageLimit) || 0).toString());
+
+                if (coverFile) {
+                    formData.append('cover_image', coverFile);
+                }
+                formData.append('created_at', new Date().toISOString());
+
+                // --- ИСПРАВЛЕНИЕ: Сериализация Авторов в JSON строку ---
+                const authorsList = author.split(',').map(a => a.trim()).filter(a => a);
+                const authorsJson = authorsList.map(authName => ({ name: authName }));
+
+                // Передаем как JSON строку
+                formData.append('authors', JSON.stringify(authorsJson));
+
+
+                // --- ИСПРАВЛЕНИЕ: Сериализация Жанров в JSON строку ---
+                const genresList = genre.split(',').map(g => g.trim()).filter(g => g);
+                const genresJson = genresList.map(genName => ({ name: genName }));
+
+                // Передаем как JSON строку
+                formData.append('genres', JSON.stringify(genresJson));
+
+
+                // Отправляем FormData в API
+                const newGroup = await createBookGroup(token, formData);
+                targetGroupId = newGroup.id;
+            }
+
+            // Создаем копии (здесь остается JSON, так как файлы не нужны)
+            const copyPromises = validInstanceIds.map(copyId =>
+                createBookCopy(token, {
+                    id: parseInt(copyId),
+                    book_group_id: targetGroupId,
+                    status: 'available',
+                    condition: 'new',
+                    created_at: new Date().toISOString()
+                })
+            );
+
+            await Promise.all(copyPromises);
+
+            if (onSuccess) onSuccess();
+            onClose();
+
+        } catch (err: any) {
+            console.error(err);
+            setError(err.message || "Произошла ошибка при сохранении");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    // Если закрыто — ничего не рендерим
     if (!isOpen) return null;
 
     return (
-        // Оверлей (фон)
-        <div className="modal-overlay" onClick={handleOverlayClick}>
-
-            {/* Контент модалки */}
+        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
             <div className="modal-content">
-                {/* Кнопка закрытия (крестик) */}
                 <button className="modal-close-btn" onClick={onClose}>&times;</button>
 
                 <h2 className="modal-title">
@@ -154,34 +307,42 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
 
                 <form onSubmit={handleSubmit} className="modal-form">
 
+                    {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
+
                     {selectedGroup && (
                         <div className="existing-book-info">
                             <strong>Выбрана существующая группа книг!</strong>
                             <p>Вы добавляете новый физический экземпляр для книги:</p>
                             <p><i>{selectedGroup.title} ({selectedGroup.year})</i></p>
-                            <span className="reset-link" onClick={resetForm}>
-                                Нет, я хочу создать новую книгу с таким названием
-                            </span>
+                            <span className="reset-link" onClick={handleCreateNewWithTitle}>Нет, я хочу создать новую книгу с таким названием</span>
                         </div>
                     )}
 
-                    <div className="form-group">
+                    {/* --- Основной блок --- */}
+                    <div className="form-group" style={{ position: 'relative' }} ref={titleContainerRef}>
                         <label className="form-label">Название книги</label>
                         <input
                             className="input"
                             value={title}
                             onChange={handleTitleChange}
-                            placeholder="Введите название (например, Война и мир)"
+                            placeholder="Введите название"
                             autoComplete="off"
                             required
                         />
-                        {/* Выпадающий список */}
                         {!selectedGroup && suggestions.length > 0 && (
-                            <div className="suggestions-list">
+                            <div className="suggestions-list" style={{
+                                position: 'absolute', top: '100%', left: 0, right: 0,
+                                background: 'white', border: '1px solid #ccc', zIndex: 10,
+                                maxHeight: '150px', overflowY: 'auto'
+                            }}>
                                 {suggestions.map(bg => (
-                                    <div key={bg.id} className="suggestion-item" onClick={() => handleSelectSuggestion(bg)}>
-                                        <strong>{bg.title}</strong>
-                                        <small>{bg.authors.map(a => a.name).join(', ')} ({bg.year})</small>
+                                    <div
+                                        key={bg.id}
+                                        className="suggestion-item"
+                                        onClick={() => handleSelectSuggestion(bg)}
+                                        style={{ padding: '8px', cursor: 'pointer', borderBottom: '1px solid #eee' }}
+                                    >
+                                        <strong>{bg.title}</strong> ({bg.year})
                                     </div>
                                 ))}
                             </div>
@@ -199,17 +360,70 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
                         />
                     </div>
 
-
                     <div className="form-group">
-                        <label className="form-label">Год издания</label>
+                        <label className="form-label">Жанры</label>
                         <input
                             className="input"
-                            type="number"
-                            value={year}
-                            onChange={e => setYear(e.target.value)}
+                            value={genre}
+                            onChange={e => setGenre(e.target.value)}
+                            placeholder="Фантастика, Драма (через запятую)"
                             disabled={!!selectedGroup}
                         />
                     </div>
+
+                    <div className="form-group" style={{ display: 'flex', gap: '10px' }}>
+                        <div style={{ flex: 1 }}>
+                            <label className="form-label">Возраст (Limit)</label>
+                            <input
+                                className="input"
+                                type="number"
+                                value={ageLimit}
+                                onChange={e => setAgeLimit(e.target.value)}
+                                placeholder="0+"
+                                onWheel={(e) => e.currentTarget.blur()}
+                                disabled={!!selectedGroup}
+                            />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <label className="form-label">Год издания</label>
+                            <input
+                                className="input"
+                                type="number"
+                                value={year}
+                                onWheel={(e) => e.currentTarget.blur()}
+                                onChange={e => setYear(e.target.value)}
+                                disabled={!!selectedGroup}
+                            />
+                        </div>
+                    </div>
+
+                    {/* ИЗМЕНЕНИЕ 3: Input file */}
+                    <div className="form-group">
+                        <label className="form-label">Загрузить обложку</label>
+                        <input
+                            className="input"
+                            type="file"
+                            accept="image/*"
+                            onChange={e => setCoverFile(e.target.files?.[0] || null)}
+                            disabled={!!selectedGroup}
+                            style={{ paddingTop: '8px' }} // Небольшой фикс для input type=file
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label">Описание</label>
+                        <textarea
+                            className="input"
+                            value={description}
+                            onChange={e => setDescription(e.target.value)}
+                            placeholder="Краткое описание книги..."
+                            rows={3}
+                            disabled={!!selectedGroup}
+                            style={{ resize: 'vertical' }}
+                        />
+                    </div>
+
+                    {/* --- Технические поля --- */}
                     <div className="form-group">
                         <label className="form-label">ISBN</label>
                         <input
@@ -219,7 +433,6 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
                             disabled={!!selectedGroup}
                         />
                     </div>
-
 
                     <div className="form-group">
                         <label className="form-label">Издательство</label>
@@ -238,18 +451,17 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
                             type="number"
                             value={copyCount}
                             onChange={handleCopyCountChange}
-                            min="1"
+                            onWheel={(e) => e.currentTarget.blur()}
                             required
                         />
                     </div>
 
-          
                     {copyCount > 0 && (
                         <div className="instance-ids-container">
                             <label className="form-label" style={{ marginBottom: '5px', display: 'block' }}>
-                                ID {copyCount > 1 ? `для каждого из ${copyCount} экземпляров` : 'экземпляра'}
+                                Инвентарный номер (ID) {copyCount > 1 ? `для каждого из ${copyCount} экземпляров` : 'экземпляра'}
                             </label>
-                          
+
                             {instanceIds.map((id, index) => (
                                 <div key={index} className="form-group-small" style={{ marginBottom: '10px' }}>
                                     <input
@@ -265,8 +477,13 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
                         </div>
                     )}
 
-                    <button type="submit" className="btn" style={{ marginTop: '10px' }}>
-                        {selectedGroup ? 'Добавить экземпляр' : 'Создать книгу'}
+                    <button
+                        type="submit"
+                        className="btn"
+                        style={{ marginTop: '10px' }}
+                        disabled={isLoading || copyCount === 0}
+                    >
+                        {isLoading ? 'Сохранение...' : (selectedGroup ? 'Добавить экземпляр' : 'Создать книгу')}
                     </button>
                 </form>
             </div>
