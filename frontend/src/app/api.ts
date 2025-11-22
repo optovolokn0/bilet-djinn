@@ -1,7 +1,8 @@
 // src/app/api.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { RootState } from './store';
+import type { RootState } from '../store/store';
 import { logout, setCredentials } from '../features/auth/authSlice';
+
 
 /**
  * Базовый URL — из твоего сообщения

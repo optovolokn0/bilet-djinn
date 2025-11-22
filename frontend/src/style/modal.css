@@ -34,6 +34,14 @@
     /* Скролл если контент не влезает */
     transform: scale(0.95);
     animation: scaleUp 0.2s forwards;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.modal-content::-webkit-scrollbar {
+    display: none;
+    width: 0; /* Дополнительно гарантируем, что место не будет занимать */
+    height: 0;
 }
 
 /* Кнопка закрытия (крестик) */

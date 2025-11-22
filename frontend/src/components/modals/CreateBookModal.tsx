@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 // Импортируем стили, чтобы они применились к разметке ниже
-import '../../style/modal.css';
 import { bookGroups } from '../../mocks';
 import type { IBookGroup } from '../../modules';
 
@@ -21,6 +20,9 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
     const [suggestions, setSuggestions] = useState<IBookGroup[]>([]);
     const [selectedGroup, setSelectedGroup] = useState<IBookGroup | null>(null);
 
+    const [copyCount, setCopyCount] = useState<number>(1);
+    const [instanceIds, setInstanceIds] = useState<string[]>(['']);
+
     // 1. ЛОГИКА МОДАЛКИ: Блокировка скролла при открытии
     useEffect(() => {
         if (isOpen) {
@@ -31,6 +33,19 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
         }
         return () => { document.body.style.overflow = 'unset'; };
     }, [isOpen]);
+
+    // 💡 НОВЫЙ ЭФФЕКТ: Синхронизация полей ID с количеством копий
+    useEffect(() => {
+        // Создаем новый массив ID, основываясь на новом copyCount
+        setInstanceIds(prevIds => {
+            const newIds = Array(copyCount).fill('');
+            // Копируем существующие значения, если они есть
+            for (let i = 0; i < Math.min(copyCount, prevIds.length); i++) {
+                newIds[i] = prevIds[i];
+            }
+            return newIds;
+        });
+    }, [copyCount]);
 
     // 2. ЛОГИКА МОДАЛКИ: Закрытие по клику на фон
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -47,6 +62,8 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
         setPublisher('');
         setSelectedGroup(null);
         setSuggestions([]);
+        setCopyCount(1);
+        setInstanceIds(['']);
     };
 
     // --- Логика формы (без изменений) ---
@@ -77,17 +94,43 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
         setYear(group.year?.toString() || '');
         setPublisher(group.publisher || '');
         setSuggestions([]);
+        setCopyCount(1);
+    };
+
+    // 💡 НОВЫЙ ХЕНДЛЕР: Обновление количества копий
+    const handleCopyCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseInt(e.target.value);
+        // Проверка на корректность и минимальное значение
+        if (!isNaN(value) && value >= 1) {
+            setCopyCount(value);
+        } else if (e.target.value === '') {
+            setCopyCount(0); // Или 1, в зависимости от требуемой логики
+        }
+    };
+
+    // 💡 НОВЫЙ ХЕНДЛЕР: Обновление ID конкретного экземпляра
+    const handleInstanceIdChange = (index: number, value: string) => {
+        setInstanceIds(prevIds => {
+            const newIds = [...prevIds];
+            newIds[index] = value;
+            return newIds;
+        });
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        // 💡 ЛОГИКА: Фильтрация пустых ID перед отправкой
+        const validInstanceIds = instanceIds.filter(id => id.trim() !== '');
+
         if (selectedGroup) {
-            console.log('Создание экземпляра для группы:', selectedGroup.id);
-            alert(`Успешно добавлен новый экземпляр книги "${selectedGroup.title}" (ID группы: ${selectedGroup.id})`);
+            console.log(`Добавление ${validInstanceIds.length} экземпляров для группы:`, selectedGroup.id);
+            console.log('ID экземпляров:', validInstanceIds);
+            alert(`Успешно добавлено ${validInstanceIds.length} новых экземпляров для книги "${selectedGroup.title}" (ID: ${validInstanceIds.join(', ')})`);
         } else {
             console.log('Создание новой группы книг:', { title, author, isbn, year, publisher });
-            alert(`Создана новая книга "${title}" и её первый экземпляр`);
+            console.log('ID экземпляров:', validInstanceIds);
+            alert(`Создана новая книга "${title}" и её ${validInstanceIds.length} экземпляров (ID: ${validInstanceIds.join(', ')})`);
         }
 
         onClose();
@@ -193,10 +236,34 @@ export default function CreateBookModal({ isOpen, onClose }: CreateBookModalProp
                         <input
                             className="input"
                             type="number"
-                            defaultValue="1"
+                            value={copyCount}
+                            onChange={handleCopyCountChange}
                             min="1"
+                            required
                         />
                     </div>
+
+          
+                    {copyCount > 0 && (
+                        <div className="instance-ids-container">
+                            <label className="form-label" style={{ marginBottom: '5px', display: 'block' }}>
+                                ID {copyCount > 1 ? `для каждого из ${copyCount} экземпляров` : 'экземпляра'}
+                            </label>
+                          
+                            {instanceIds.map((id, index) => (
+                                <div key={index} className="form-group-small" style={{ marginBottom: '10px' }}>
+                                    <input
+                                        className="input"
+                                        type="text"
+                                        value={id}
+                                        onChange={(e) => handleInstanceIdChange(index, e.target.value)}
+                                        placeholder={`Введите ID экземпляра ${index + 1}`}
+                                        required
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
                     <button type="submit" className="btn" style={{ marginTop: '10px' }}>
                         {selectedGroup ? 'Добавить экземпляр' : 'Создать книгу'}
