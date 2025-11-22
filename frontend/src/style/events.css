@@ -1,5 +1,6 @@
 .events-list {
     margin-top: 20px;
+    /* margin-bottom: 20px; */
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -24,6 +25,7 @@
     transform: scale(1.02);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
+
 
 .event-text {
     width: 100%;
@@ -64,4 +66,16 @@
 .event-btn {
     margin-bottom: 20px;
     max-width: 220px;
+}
+
+.events-page .main-btn {
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: white; 
+    color: #111;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.events-page .main-btn:hover:not(.active) {
+    background-color: #e5e7eb; /* чуть темнее при наведении */
 }
