@@ -98,8 +98,27 @@ export default function Header() {
                 {/* Дропдаун меню */}
                 {isDropdownOpen && (
                   <div className="dropdown-menu">
-                    <Link to="/reader/my-books" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>Мои книги</Link>
-                    <Link to="/reader/history" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>История</Link>
+                    {/* 💡 Отображаем "Мои книги" и "История" только для читателя */}
+                    {user?.role === 'reader' && (
+                      <>
+                        <Link
+                          to="/reader/my-books"
+                          className="dropdown-item"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          Мои книги
+                        </Link>
+                        <Link
+                          to="/reader/history"
+                          className="dropdown-item"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          История
+                        </Link>
+                      </>
+                    )}
+
+                    {/* "Выход" отображается всегда, независимо от роли */}
                     <div onClick={handleLogout} className="dropdown-item logout-item">Выход</div>
                   </div>
                 )}
