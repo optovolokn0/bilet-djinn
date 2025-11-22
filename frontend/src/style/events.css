@@ -1,3 +1,7 @@
+.events-page{
+    margin: 20px;
+}
+
 .events-list {
     margin-top: 20px;
     display: flex;
@@ -6,6 +10,11 @@
     width: 100%;
     padding: 0; /* убираем горизонтальные паддинги */
     box-sizing: border-box;
+}
+
+.events-title{
+    margin: 0;
+    margin-bottom: 20px;
 }
 
 .event-card {
