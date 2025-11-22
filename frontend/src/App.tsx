@@ -1,11 +1,10 @@
-import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import '../src/App.css'
 // import Login from './pages/Login';
 import ReaderCatalog from './pages/reader/ReaderCatalog';
 import LibraryCatalog from './pages/library/LibraryCatalog';
-import { ProtectedRoute } from './routes/ProtectedRoutes';
-import LoginPage from './pages/LoginPage';
+
+
 // import ReaderBook from './pages/reader/BookPage';
 // import ReaderAccount from './pages/reader/Account';
 // import MyBooks from './pages/reader/MyBooks';
@@ -39,7 +38,6 @@ export default function App() {
   return (
     <main>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
 
         {/* Reader */}
         <Route path="/reader/catalog" element={
