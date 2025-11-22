@@ -235,24 +235,27 @@ export default function EventsPage() {
 
             <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
                 <div style={{ display: 'flex', gap: 8 }}>
-                    <button
-                        className={`btn main-btn${view === 'all' ? 'active' : ''}`}
-                        onClick={() => setView('all')}
-                        aria-pressed={view === 'all'}
-                    >
-                        Все мероприятия
-                    </button>
-
                     {isReader && (
-                        <button
-                            className={`btn main-btn${view === 'mine' ? 'active' : ''}`}
-                            onClick={() => setView('mine')}
-                            aria-pressed={view === 'mine'}
-                        >
-                            Мои мероприятия
-                        </button>
+                        <>
+                            <button
+                                className={`btn main-btn${view === 'all' ? 'active' : ''}`}
+                                onClick={() => setView('all')}
+                                aria-pressed={view === 'all'}
+                            >
+                                Все мероприятия
+                            </button>
+
+                            <button
+                                className={`btn main-btn${view === 'mine' ? 'active' : ''}`}
+                                onClick={() => setView('mine')}
+                                aria-pressed={view === 'mine'}
+                            >
+                                Мои мероприятия
+                            </button>
+                        </>
                     )}
                 </div>
+
 
 
                 <div style={{ flex: 1 }} />

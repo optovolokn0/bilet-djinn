@@ -34,7 +34,7 @@ export default function MapPage() {
 
         <section className="map-description" style={{ maxWidth: 1100, width: '100%' }}>
           <h2 style={{ marginTop: 0, color: '#A8C0A6' }}>Краткая легенда</h2>
-          <ol className="map-legend" style={{ lineHeight: 1.6 }}>
+          <ul className="map-legend" style={{ lineHeight: 1.6 }}>
             <li><strong>Входная зона</strong> – арт-объект «Голос города» (метка 6 на схеме)</li>
             <li><strong>5</strong> – Абонемент для детей</li>
             <li><strong>7</strong> – Гардероб</li>
@@ -46,7 +46,7 @@ export default function MapPage() {
             <li><strong>13</strong> – Зал искусств (арт-галерея)</li>
             <li><strong>13.1</strong> – Проектный офис</li>
             <li><strong>13.2</strong> – Медиасреда (подкастерная)</li>
-          </ol>
+          </ul>
         </section>
       </div>
     </main>
