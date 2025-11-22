@@ -4,6 +4,7 @@
 @import '../src/style/btn.css';
 @import '../src/style/events.css';
 @import '../src/style/loginPage.css';
+@import '../src/style/media.css';
 @import '../src/style/searchBar.css';
 
 
@@ -21,7 +22,6 @@ main {
   max-width: 1260px;   /* максимальная ширина контента */
   width: 100%;         /* чтобы на маленьких экранах занимал всю ширину */
   margin: 0 auto 30px;      /* центрирование по горизонтали */
-  padding: 0 16px;     /* боковые отступы для мобильных */
 }
 
 a {

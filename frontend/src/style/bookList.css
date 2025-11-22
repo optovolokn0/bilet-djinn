@@ -24,8 +24,8 @@
 
 /* Карточка книги */
 .book-card {
-    height: 425px;
-    width: 200px;
+    /* height: 425px;
+    width: 200px; */
     padding: 12px;
     border-radius: 4px;
     background-color: #fff;
