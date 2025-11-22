@@ -1,0 +1,67 @@
+.events-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.event-card {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    padding: 16px;
+    border-radius: 12px;
+
+    background: #fff;
+    border: 1px solid #e5e7eb;
+
+    /* --- Тень как у карточек книг --- */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.event-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.event-text {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.event-title {
+    margin: 5px;
+    font-size: 32px;
+}
+
+.event-descr {
+    margin-bottom: 10px;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+.event-datetime {
+    margin-bottom: 10px;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+.event-count-places {
+    margin-bottom: 15px;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+.event-img {
+    height: 250px;
+    width: 400px;
+    object-fit: cover;
+}
+
+.event-btn {
+    margin-bottom: 20px;
+    max-width: 220px;
+}

@@ -63,3 +63,24 @@ export interface IRenewRequest {
   new_due_at?: string | null;
   status: 'pending' | 'approved' | 'rejected';
 }
+
+// src/modules/events.ts
+
+export interface IEvent {
+  id: number;
+  title: string;
+  description?: string | null;
+  image_url?: string | null;
+  date_time: string;       // ISO формат
+  total_seats: number;
+  booked_seats: number;
+  created_by?: number | null; // id библиотекаря, создавшего мероприятие
+  created_at: string;
+  updated_at: string;
+}
+
+// Вспомогательные поля для UI
+export interface IEventWithAvailability extends IEvent {
+  free_seats: number;  // total_seats - booked_seats
+  is_full: boolean;    // true, если мест нет
+}
