@@ -43,16 +43,12 @@ export default function App() {
 
         {/* Reader */}
         <Route path="/reader/catalog" element={
-          <ProtectedRoute role="reader">
             <ReaderCatalog />
-          </ProtectedRoute>
         } />
 
         {/* Library */}
         <Route path="/library/catalog" element={
-          <ProtectedRoute role="library">
             <LibraryCatalog />
-          </ProtectedRoute>
         } />
       </Routes>
     </main>
