@@ -9,6 +9,7 @@ import ReaderLoansPage from "./pages/reader/ReaderLoansPage";
 
 import { ProtectedRoute } from "./routes/ProtectedRoutes";
 import EventsPage from "./pages/EventPage";
+import MapPage from "./pages/reader/MapPage";
 
 export default function App() {
   return (
@@ -41,6 +42,15 @@ export default function App() {
           element={
             <ProtectedRoute role="reader">
               <EventsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reader/map"
+          element={
+            <ProtectedRoute role="reader">
+              <MapPage />
             </ProtectedRoute>
           }
         />
