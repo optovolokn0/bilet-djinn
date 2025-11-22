@@ -7,6 +7,25 @@
 @import '../src/style/media.css';
 @import '../src/style/searchBar.css';
 @import '../src/style/loans.css';
+@import '../src/style/modal.css';
+
+html {
+    /* Скрываем скроллбар в WebKit (Chrome, Safari) */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+    overflow-y: auto;
+    /* Предотвращаем появление скролла на html */
+    transform: scale(0.95);
+    animation: scaleUp 0.2s forwards;
+}
+
+/* Скрываем в Chrome, Safari, Opera (WebKit-браузеры) на html */
+html::-webkit-scrollbar {
+    display: none;
+    width: 0;
+}
 
 
 body {
@@ -16,13 +35,20 @@ body {
     font-family: "Mulish";
     font-weight: 900;
     font-size: 22px;
+
+    width: 100vw;
+    height: 100vh;
+    overflow-y: scroll;
 }
 
 /* Центрируем main и задаём максимальную ширину */
 main {
-  max-width: 1260px;   /* максимальная ширина контента */
-  width: 100%;         /* чтобы на маленьких экранах занимал всю ширину */
-  margin: 0 auto 30px;      /* центрирование по горизонтали */
+    max-width: 1260px;
+    /* максимальная ширина контента */
+    width: 100%;
+    /* чтобы на маленьких экранах занимал всю ширину */
+    margin: 0 auto 30px;
+    /* центрирование по горизонтали */
 }
 
 a {
@@ -30,6 +56,6 @@ a {
     text-decoration: none;
 }
 
-p{
+p {
     margin: 0;
 }
