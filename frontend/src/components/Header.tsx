@@ -10,7 +10,7 @@ export default function Header() {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/login');
+    navigate('/login'); // редирект на страницу входа
   };
 
   return (
@@ -41,12 +41,15 @@ export default function Header() {
           {user ? (
             <>
               <span className="user-id">ID: {user.id}</span>
-              <button className='btn' onClick={handleLogout} style={{ marginLeft: 10 }}>
+              <button
+                onClick={handleLogout}
+                style={{ marginLeft: '10px', cursor: 'pointer' }}
+              >
                 Выйти
               </button>
             </>
           ) : (
-            <Link to="/login" className="btn">Войти</Link>
+            <Link to="/login" className="text-sm underline">Войти</Link>
           )}
         </div>
       </nav>

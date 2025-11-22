@@ -7,23 +7,27 @@ import { useNavigate } from "react-router-dom";
 const LoginPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
+  const [isLibrary, setIsLibrary] = useState(false); // чекбокс
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
     try {
       setError("");
 
+      // endpoint по роли
+      const endpoint = isLibrary
+        ? "https://truly-economic-vervet.cloudpub.ru/api/auth/library/login/"
+        : "https://truly-economic-vervet.cloudpub.ru/api/auth/reader/login/";
+
       // 1. Логинимся
-      const response = await fetch(
-        "https://truly-economic-vervet.cloudpub.ru/api/auth/reader/login/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: login, password }),
-        }
-      );
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: login, password }),
+      });
 
       if (!response.ok) throw new Error("Неверный логин или пароль");
 
@@ -33,9 +37,7 @@ const LoginPage = () => {
       // 2. Получаем данные пользователя
       const userResp = await fetch(
         "https://truly-economic-vervet.cloudpub.ru/api/auth/me/",
-        {
-          headers: { Authorization: `Bearer ${access}` },
-        }
+        { headers: { Authorization: `Bearer ${access}` } }
       );
 
       if (!userResp.ok) throw new Error("Не удалось получить данные пользователя");
@@ -59,7 +61,7 @@ const LoginPage = () => {
       // 3. Сохраняем в Redux
       dispatch(setCredentials({ access, refresh, user: mappedUser }));
 
-      // 4. Перебрасываем на каталог по роли
+      // 4. Редирект по роли
       if (mappedUser.role === "reader") navigate("/reader/catalog");
       else if (mappedUser.role === "library") navigate("/library/catalog");
 
@@ -71,20 +73,35 @@ const LoginPage = () => {
   return (
     <div style={{ padding: 20 }}>
       <h2>Авторизация</h2>
+
+      <div>
+        <label>
+          <input
+            type="checkbox"
+            checked={isLibrary}
+            onChange={() => setIsLibrary(!isLibrary)}
+          />
+          Войти как библиотекарь
+        </label>
+      </div>
+
       <input
         type="text"
         placeholder="Логин / Email / Номер билета"
         value={login}
         onChange={(e) => setLogin(e.target.value)}
+        style={{ display: "block", marginTop: 10 }}
       />
       <input
         type="password"
         placeholder="Пароль"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        style={{ display: "block", marginTop: 10 }}
       />
-      <button onClick={handleLogin}>Войти</button>
-      {error && <div style={{ color: "red" }}>{error}</div>}
+
+      <button onClick={handleLogin} style={{ marginTop: 10 }}>Войти</button>
+      {error && <div style={{ color: "red", marginTop: 10 }}>{error}</div>}
     </div>
   );
 };
