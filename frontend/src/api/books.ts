@@ -15,6 +15,16 @@ export interface ICreateBookCopyPayload {
     created_at?: string;
 }
 
+export interface IIssueBookPayload {
+    id: number;           // ID копии
+    reader_id: number;    // ID читателя
+    book_group_id: number;// ID группы книг
+    status: 'issued';     // Статус всегда 'issued' при выдаче
+    condition?: string;   // Состояние книги
+    created_at: string;   // Дата выдачи (обычно текущая)
+    // Примечание: Если бэкенд начнет принимать срок сдачи, добавить due_at сюда
+}
+
 // --- Функции API ---
 
 // 1. Получить список всех групп книг (для автокомплита)
@@ -81,6 +91,27 @@ export const createBookCopy = async (token: string, data: ICreateBookCopyPayload
 
     if (!res.ok) {
         throw new Error(`Не удалось создать экземпляр ID: ${data.id}`);
+    }
+
+    return res.json();
+};
+
+// 5. Выдать экземпляр книги читателю
+export const issueBookCopy = async (token: string, copyId: number, data: IIssueBookPayload): Promise<any> => {
+    // Обратите внимание: copyId идет и в URL, и в body (согласно вашему примеру)
+    const res = await fetch(`${BOOK_COPIES_URL}${copyId}/issue/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        const errorMsg = errData.detail || JSON.stringify(errData) || `Не удалось выдать книгу (ID копии: ${copyId})`;
+        throw new Error(errorMsg);
     }
 
     return res.json();
