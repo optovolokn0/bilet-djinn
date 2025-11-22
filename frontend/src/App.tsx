@@ -36,7 +36,7 @@ export default function App() {
         />
 
         <Route
-          path="/reader/loans"
+          path="/reader/my-books"
           element={
             <ProtectedRoute role="reader">
               <ReaderLoansPage />

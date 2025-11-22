@@ -46,6 +46,9 @@
     /* текст сверху, кнопка снизу */
 }
 
+.book-container .container{
+    margin-bottom: 10px;
+}
 
 
 .book-card:hover {
