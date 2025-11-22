@@ -42,4 +42,61 @@
     .input {
         width: 250px;
     }
+
+    .title{
+        font-size: 18px;
+    }
+
+    .input{
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+
+    .search-icon{
+        width: 15px;
+        height: 15px;
+    }
+
+    .user-icon {
+        width: 22px;
+        height: 22px;
+    }
+
+    .notification-icon {
+        width: 22px;
+        height: 22px;
+    }
+
+    .cover-img {
+        max-width: 100px;
+        max-height: 200px;
+    }
+
+    .book-list{
+        gap: 10px;
+    }
+
+    .book-card{
+        font-size: 12px;
+    }
+
+    .btn{
+        font-weight: normal;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 400px){
+    main{
+        margin: 0 10px;
+    }
+
+    .logo{
+        font-size: 12px;
+    }
+
+    .user-id{
+        margin: 0;
+        font-size: 12px;
+    }
 }

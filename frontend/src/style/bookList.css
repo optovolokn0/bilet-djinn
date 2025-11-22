@@ -1,6 +1,6 @@
 /* Контейнер каталога книг */
 .book-catalog {
-    margin-top: 20px;
+    margin: 20px;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -16,6 +16,7 @@
     border-radius: 4px;
     background-color: #fff;
     display: flex;
+    align-items: center;
     flex-direction: column;
     font-weight: normal;
     font-size: 16px;
