@@ -5,6 +5,8 @@ body {
     padding: 0;
     box-sizing: border-box;
     font-family: "Mulish";
+    font-weight: 900;
+    font-size: 22px;
 }
 
 a{

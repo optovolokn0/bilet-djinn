@@ -2,8 +2,8 @@
 const now = new Date().toISOString();
 
 export const users = [
-  { id: 1, role: 'reader', username: 'reader', first_name: 'Иван', last_name: 'Иванов', password: 'reader', email: 'ivan@example.com', phone: '+70000000001', birth_date: '1990-01-01', created_at: now, updated_at: now },
-  { id: 2, role: 'library', username: 'lib1', first_name: 'Анна', last_name: 'Библиотекарь', password: 'library', email: 'lib@example.com', phone: '+70000000002', birth_date: '1985-05-05', created_at: now, updated_at: now }
+  { id: 1423422, role: 'reader', username: 'reader', first_name: 'Иван', last_name: 'Иванов', password: 'reader', email: 'ivan@example.com', phone: '+70000000001', birth_date: '1990-01-01', created_at: now, updated_at: now },
+  { id: 2552466, role: 'library', username: 'lib1', first_name: 'Анна', last_name: 'Библиотекарь', password: 'library', email: 'lib@example.com', phone: '+70000000002', birth_date: '1985-05-05', created_at: now, updated_at: now }
 ];
 
 export const authors = [
