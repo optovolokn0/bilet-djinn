@@ -101,18 +101,13 @@ export default function IssuedBooksPage() {
       {error && <p className="text-error">{error}</p>}
       {!loading && loans.length === 0 && <p>Нет выданных книг</p>}
 
-      <div className="loans-list" style={{ display: 'grid', gap: 12 }}>
+      <div className="loans-list" >
         {loans.map(loan => {
           const isProcessing = processingIds.includes(loan.id);
           const canAct = loan.status === 'active' || loan.status === 'overdue';
 
           return (
             <div key={loan.id} style={{ display: 'flex', gap: 16, padding: 12, border: '1px solid #e5e7eb', borderRadius: 8 }}>
-              <div style={{ minWidth: 120 }}>
-                <div style={{ height: 110, width: 80, background: '#f3f3f3', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>
-                  №{loan.copy.id}
-                </div>
-              </div>
 
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

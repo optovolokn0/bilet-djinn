@@ -8,7 +8,9 @@
 @import '../src/style/loans.css';
 @import '../src/style/modal.css';
 @import '../src/style/map.css';
-@import '../src/style/history.css';
+@import '../src/style/renew.css';
+
+/* @import '../src/style/history.css'; */
 
 @import '../src/style/media.css';
 
@@ -62,4 +64,8 @@ a {
 
 p {
     margin: 0;
+}
+
+.logo{
+    color: black;
 }

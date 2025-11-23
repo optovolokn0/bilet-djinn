@@ -179,7 +179,7 @@ export default function RenewRequestsPage() {
       {error && <p className="text-error">{error}</p>}
       {!loading && requests.length === 0 && <p>Нет заявок</p>}
 
-      <div style={{ display: 'grid', gap: 12 }}>
+      <div className='renew-list' style={{ display: 'grid', gap: 12 }}>
         {requests.map(r => {
           const isProc = processing.includes(r.id);
           return (
@@ -194,7 +194,7 @@ export default function RenewRequestsPage() {
                   <div>Текущий срок: <b>{new Date(r.loan.due_at).toLocaleString()}</b></div>
                   <div>Предлагаемая новая дата: <b>{new Date(r.new_due_at).toLocaleString()}</b></div>
                   <div>Запрошено: {new Date(r.requested_at).toLocaleString()}</div>
-                  <div style={{ marginTop: 8 }}>
+                  <div className='btns-container' style={{ marginTop: 8 }}>
                     <button className="btn" onClick={() => handleApprove(r)} disabled={isProc}>{
                       isProc ? 'Обработка...' : 'Одобрить'
                     }</button>
