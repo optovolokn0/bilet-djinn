@@ -4,7 +4,7 @@ import { useAppSelector } from '../../hooks';
 import { API_BASE_URL } from '../../config';
 import { useNavigate } from 'react-router-dom';
 
-interface IReturnedLoan {
+export interface IReturnedLoan {
   id: number;
   copy: {
     id: number;

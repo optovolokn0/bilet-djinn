@@ -10,9 +10,10 @@ import { ProtectedRoute } from "./routes/ProtectedRoutes";
 import EventsPage from "./pages/EventPage";
 import MapPage from "./pages/reader/MapPage";
 import RegisterReaderPage from "./pages/library/RegisterReaderPage";
-import  ReturnedLoansPage from "./pages/reader/HistoryPage";
+import ReturnedLoansPage from "./pages/reader/HistoryPage";
 import IssuedBooksPage from "./pages/library/IssuedBooksPage";
 import RenewRequestsPage from "./pages/library/RenewRequestsPage";
+import RecommendedCatalog from "./pages/reader/RecommendedCatalog";
 
 export default function App() {
   return (
@@ -58,11 +59,20 @@ export default function App() {
           }
         />
 
-         <Route
+        <Route
           path="/reader/history"
           element={
             <ProtectedRoute role="reader">
               <ReturnedLoansPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reader/recommendations"
+          element={
+            <ProtectedRoute role="reader">
+              <RecommendedCatalog />
             </ProtectedRoute>
           }
         />
@@ -92,7 +102,7 @@ export default function App() {
           path="/library/register-reader"
           element={
             <ProtectedRoute role="library">
-              <RegisterReaderPage/>
+              <RegisterReaderPage />
             </ProtectedRoute>
           }
         />
@@ -101,7 +111,7 @@ export default function App() {
           path="/library/issued"
           element={
             <ProtectedRoute role="library">
-              <IssuedBooksPage/>
+              <IssuedBooksPage />
             </ProtectedRoute>
           }
         />
@@ -110,7 +120,7 @@ export default function App() {
           path="/library/renew"
           element={
             <ProtectedRoute role="library">
-              <RenewRequestsPage/>
+              <RenewRequestsPage />
             </ProtectedRoute>
           }
         />
