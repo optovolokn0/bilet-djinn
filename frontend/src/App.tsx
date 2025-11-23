@@ -12,6 +12,7 @@ import MapPage from "./pages/reader/MapPage";
 import RegisterReaderPage from "./pages/library/RegisterReaderPage";
 import  ReturnedLoansPage from "./pages/reader/HistoryPage";
 import IssuedBooksPage from "./pages/library/IssuedBooksPage";
+import RenewRequestsPage from "./pages/library/RenewRequestsPage";
 
 export default function App() {
   return (
@@ -101,6 +102,15 @@ export default function App() {
           element={
             <ProtectedRoute role="library">
               <IssuedBooksPage/>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/library/renew"
+          element={
+            <ProtectedRoute role="library">
+              <RenewRequestsPage/>
             </ProtectedRoute>
           }
         />
