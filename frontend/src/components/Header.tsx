@@ -169,6 +169,7 @@ export default function Header() {
               <Link to="/library/issued" className="mobile-nav-item" onClick={() => setIsMenuOpen(false)}>Выданные книги</Link>
               <Link to="/library/new-book" className="mobile-nav-item" onClick={handleOpenModal}>Добавить книгу</Link>
               <Link to="/library/reg-reader" className="mobile-nav-item" onClick={() => setIsMenuOpen(false)}>Регистрация читателя</Link>
+              <Link to="/library/renew" className="nav-item" onClick={() => setIsMenuOpen(false)}>Заявки на продление</Link>
             </>
           )}
 
