@@ -91,7 +91,7 @@ export default function IssueBookModal({ isOpen, onClose, book, onSuccess }: Iss
 
             await issueBookCopy(token, copyIdNum, payload);
 
-            alert(`Книга "${book.title}" (экземпляр ${copyId}) успешно выдана читателю ${readerId}`);
+
 
             if (onSuccess) onSuccess();
             onClose();
