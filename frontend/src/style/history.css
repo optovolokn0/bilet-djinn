@@ -1,0 +1,135 @@
+.returned-loans-page {
+    padding: 16px;
+}
+
+.page-title {
+    margin: 8px 0 16px;
+    font-size: 28px;
+    color: #0f5132;
+}
+
+.text-error {
+    color: #b91c1c;
+    margin-bottom: 12px;
+}
+
+.text-muted {
+    color: #6b7280;
+}
+
+.loans-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 10px;
+}
+
+.loan-card {
+    display: flex;
+    gap: 18px;
+    padding: 14px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+.loan-left {
+    width: 160px;
+    flex: 0 0 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loan-cover-placeholder {
+    width: 140px;
+    height: 200px;
+    background: linear-gradient(180deg, #f3f7f3, #e9efe9);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #556b57;
+    font-weight: 700;
+}
+
+.loan-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.loan-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.loan-title {
+    font-size: 18px;
+    color: #111827;
+}
+
+.loan-bookgroup {
+    color: #6b7280;
+    margin-left: 8px;
+    font-size: 13px;
+}
+
+.loan-status {
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #eefaf0;
+    color: #0f5132;
+}
+
+.loan-status.overdue {
+    background: #fff1f2;
+    color: #991b1b;
+}
+
+.loan-dates {
+    margin-top: 10px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    color: #374151;
+}
+
+.loan-reader {
+    margin-top: 10px;
+    color: #374151;
+}
+
+.btn.small {
+    padding: 6px 10px;
+    font-size: 13px;
+    background: #A8C0A6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn.small:hover {
+    opacity: 0.95;
+}
+
+@media (max-width: 820px) {
+    .loan-card {
+        flex-direction: column;
+    }
+
+    .loan-left {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .loan-cover-placeholder {
+        width: 100%;
+        height: 160px;
+    }
+}
