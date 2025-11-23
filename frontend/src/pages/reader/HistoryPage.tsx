@@ -132,18 +132,7 @@ export default function ReturnedLoansPage(): JSX.Element {
                 Читатель: {loan.reader?.username ?? `${loan.reader?.first_name ?? ''} ${loan.reader?.last_name ?? ''}`}
               </div>
 
-              <div style={{ marginTop: 10 }}>
-                {/* при желании можно добавить ссылку на детали копии / книги */}
-                <button
-                  className="btn small"
-                  onClick={() => {
-                    // если есть страница книги/группы, можно перейти
-                    navigate(`/books/${loan.copy.book_group}`);
-                  }}
-                >
-                  О книге
-                </button>
-              </div>
+        
             </div>
           </div>
         ))}

@@ -138,10 +138,6 @@ export default function RecommendedCatalog() {
             {/* Заголовок и классы как в оригинальном каталоге */}
             <h2 className='book-catalog title'>Рекомендуем вам</h2>
 
-            {/* Можно добавить описание, почему мы это рекомендуем */}
-            <p className="text-muted" style={{ marginBottom: 20 }}>
-                Подборка на основе ваших последних прочитанных книг.
-            </p>
 
             {isLoading && <div style={{ textAlign: 'center', padding: '20px' }}>Подбираем книги...</div>}
             {error && <div style={{ color: 'red', textAlign: 'center', padding: '20px' }}>Ошибка: {error}</div>}
