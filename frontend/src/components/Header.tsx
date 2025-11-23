@@ -121,6 +121,7 @@ export default function Header() {
             <>
               <Link to="/reader/catalog" className="mobile-nav-item" onClick={() => setIsMenuOpen(false)}>Каталог</Link>
               <Link to="/reader/events" className="mobile-nav-item" onClick={() => setIsMenuOpen(false)}>Мероприятия</Link>
+              <Link to="/reader/recommendations" className="mobile-nav-item" onClick={() => setIsMenuOpen(false)}>Рекомендации</Link>
               <Link to="/reader/map" className="mobile-nav-item" onClick={() => setIsMenuOpen(false)}>Карта</Link>
             </>
           )}
