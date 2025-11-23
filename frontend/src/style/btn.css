@@ -9,6 +9,13 @@
     font-weight: 900;
     font-size: 18px;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn:hover{
+    background-color: white;
+    color: #A8C0A6;
+    outline: 1px solid #A8C0A6;
 }
 
 

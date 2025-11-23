@@ -131,8 +131,6 @@ export default function ReturnedLoansPage(): JSX.Element {
               <div className="loan-reader">
                 Читатель: {loan.reader?.username ?? `${loan.reader?.first_name ?? ''} ${loan.reader?.last_name ?? ''}`}
               </div>
-
-        
             </div>
           </div>
         ))}

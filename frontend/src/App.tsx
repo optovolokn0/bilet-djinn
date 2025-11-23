@@ -15,6 +15,7 @@ import IssuedBooksPage from "./pages/library/IssuedBooksPage";
 import RenewRequestsPage from "./pages/library/RenewRequestsPage";
 import RecommendedCatalog from "./pages/reader/RecommendedCatalog";
 
+
 export default function App() {
   return (
     <main>
@@ -127,6 +128,7 @@ export default function App() {
 
         {/* Default redirect */}
         <Route path="*" element={<Navigate to="/login" replace />} />
+
       </Routes>
     </main>
   );
