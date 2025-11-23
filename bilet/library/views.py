@@ -2,12 +2,13 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from django.utils import timezone
 from django.db import transaction
-from .models import User, Author, Genre, BookGroup, BookCopy, Loan, RenewRequest, Event, Notification
+from .models import User, Author, Genre, BookGroup, BookCopy, Loan, RenewRequest, Event, Notification, Review
 from .serializers import (
     UserCreateSerializer, UserSerializer, AuthorSerializer, GenreSerializer, BookGroupSerializer,
-    BookCopySerializer, LoanSerializer, RenewRequestSerializer, EventSerializer
+    BookCopySerializer, LoanSerializer, RenewRequestSerializer, EventSerializer, ReviewSerializer
 )
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.exceptions import ValidationError, PermissionDenied
@@ -58,6 +59,31 @@ class UserViewSet(viewsets.ModelViewSet):
         # Prevent deleting admins (or unknown roles) via this endpoint
         raise PermissionDenied(detail="Недостаточно прав для удаления данного пользователя")
 
+    @action(detail=False, methods=["post"], url_path="create-library")
+    def create_library(self, request):
+        """Admin-only shortcut to create a user with role 'library'.
+
+        POST /api/users/create-library/ with same payload as `users` create.
+        """
+        require_role(request.user, "admin")
+        data = request.data.copy()
+        # Allow `username` in place of `contract_number` so admin doesn't need to provide contract_number.
+        username = data.get("username")
+        if not data.get("contract_number"):
+            if not username:
+                raise ValidationError({"username": "required"})
+            data["contract_number"] = username
+        if not data.get("ticket_number"):
+            if not username:
+                raise ValidationError({"username": "required"})
+            data["ticket_number"] = username
+
+        data["role"] = "library"
+        serializer = UserCreateSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response(UserSerializer(user).data, status=201)
+
 class BookGroupViewSet(viewsets.ModelViewSet):
     queryset = BookGroup.objects.prefetch_related("authors", "genres", "copies").all()
     serializer_class = BookGroupSerializer
@@ -68,6 +94,19 @@ class BookGroupViewSet(viewsets.ModelViewSet):
         bg = self.get_object()
         copies = bg.copies.all()
         return Response(BookCopySerializer(copies, many=True).data)
+
+    @action(detail=True, methods=["get"])
+    def reviews(self, request, pk=None):
+        """Return reviews for this BookGroup."""
+        bg = self.get_object()
+        qs = bg.reviews.select_related("user").order_by("-created_at")
+        page = self.paginate_queryset(qs)
+        from .serializers import ReviewSerializer
+        if page is not None:
+            serializer = ReviewSerializer(page, many=True, context={"request": request})
+            return self.get_paginated_response(serializer.data)
+        serializer = ReviewSerializer(qs, many=True, context={"request": request})
+        return Response(serializer.data)
 
 
 class BookCopyViewSet(viewsets.ModelViewSet):
@@ -147,6 +186,35 @@ class LoanViewSet(viewsets.ModelViewSet):
         loan.copy.save()
         return Response({"detail": "Отмечено как возвращенное"}, status=200)
 
+class UserActiveLoansView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        loans = (
+            Loan.objects
+            .filter(reader=user, status="active")
+            .select_related("copy", "copy__book_group")
+        )
+
+        data = LoanSerializer(loans, many=True).data
+        return Response(data)
+    
+class UserReturnedLoansView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        loans = (
+            Loan.objects
+            .filter(reader=user, status="returned")
+            .select_related("copy", "copy__book_group")
+        )
+
+        data = LoanSerializer(loans, many=True).data
+        return Response(data)
 
 class RenewRequestViewSet(viewsets.ModelViewSet):
     queryset = RenewRequest.objects.select_related("loan", "requested_by").all()
@@ -200,6 +268,48 @@ class EventViewSet(viewsets.ModelViewSet):
         user = request.user
         event.participants.remove(user)
         return Response({"detail": "Отмена записи"})
+
+    @action(detail=False, methods=["get"], url_path="me")
+    def my_events(self, request):
+        user = request.user
+        qs = self.get_queryset().filter(participants=user)
+        page = self.paginate_queryset(qs)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.select_related("user", "book_group").all()
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        bg = self.request.query_params.get("book_group_id")
+        if bg:
+            qs = qs.filter(book_group_id=bg)
+        return qs
+
+    def perform_create(self, serializer):
+        # serializer.create will set book_group from book_group_id and user from request
+        serializer.context["request"] = self.request
+        serializer.save()
+
+    def update(self, request, *args, **kwargs):
+        review = self.get_object()
+        if review.user != request.user:
+            # only owner or admin/library can update
+            require_role(request.user, ("library", "admin"))
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        review = self.get_object()
+        if review.user != request.user:
+            require_role(request.user, ("library", "admin"))
+        return super().destroy(request, *args, **kwargs)
 
 
 class AnalyticsViewSet(viewsets.ViewSet):

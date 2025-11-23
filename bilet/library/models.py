@@ -42,9 +42,9 @@ class User(AbstractUser):
     contract_number = models.CharField(max_length=50, unique=True)
 
     def save(self, *args, **kwargs):
-        # username = contract_number, чтобы читатель входил по договорному номеру
-        if self.contract_number:
-            self.username = self.contract_number
+        # username = ticket_number, чтобы читатель входил по договорному номеру
+        if self.ticket_number:
+            self.username = self.ticket_number
         super().save(*args, **kwargs)
     class Meta:
         db_table = "users"
@@ -60,14 +60,14 @@ class User(AbstractUser):
 
 
 class Author(models.Model):
-    name = models.TextField()
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Genre(models.Model):
-    name = models.TextField()
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
@@ -81,6 +81,7 @@ class BookGroup(models.Model):
     year = models.IntegerField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     cover_url = models.TextField(blank=True, null=True)
+    cover_image = models.ImageField(upload_to="covers/", blank=True, null=True)
     age_limit = models.IntegerField(default=0)  # 0 — без ограничений
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -90,6 +91,11 @@ class BookGroup(models.Model):
 
     def __str__(self):
         return self.title
+
+    def average_rating(self):
+        from django.db.models import Avg
+        agg = self.reviews.aggregate(avg=Avg("rating"))
+        return agg.get("avg") or 0
 
 
 class BookCopy(models.Model):
@@ -153,6 +159,7 @@ class Event(models.Model):
     duration_minutes = models.IntegerField(default=60)
     capacity = models.IntegerField(default=0)
     cover_url = models.TextField(blank=True, null=True)
+    cover_image = models.ImageField(upload_to="covers/", blank=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_events")
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -165,6 +172,25 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Review(models.Model):
+    """User reviews for a BookGroup. One review per user per book.
+
+    - `rating` is an integer 1..5
+    - `text` is optional review body
+    """
+    book_group = models.ForeignKey(BookGroup, on_delete=models.CASCADE, related_name="reviews")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
+    rating = models.IntegerField(max_length=5)
+    text = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ("book_group", "user")
+
+    def __str__(self):
+        return f"Review {self.id} by {self.user.username} for {self.book_group.title}"
 
 
 class Notification(models.Model):

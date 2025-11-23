@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_spectacular',
     'library',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,6 +55,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+ALLOWED_HOSTS = ['truly-economic-vervet.cloudpub.ru', '127.0.0.1']
 
 ROOT_URLCONF = 'bilet.urls'
 
@@ -157,3 +163,7 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     # Optional: adjust other settings as needed
 }
+
+# Media files (user uploads)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
