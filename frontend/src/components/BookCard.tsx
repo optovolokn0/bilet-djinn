@@ -32,21 +32,33 @@ export default function BookCard({ book, availableCount, onUpdate }: BookCardPro
                     className="img cover-img"
                 />
                 <div className="book-container">
-                    <div className="container">
+                    {/* 1. КОНТЕЙНЕР ДЛЯ ВСЕХ ВЕРХНИХ ЭЛЕМЕНТОВ */}
+                    <div className="book-info-top">
+                        {/* Название */}
                         <p className='book-title' title={book.title}>{book.title}</p>
+
+                        {/* Авторы */}
                         <p className='book-authors'>{authors}</p>
 
+                        {/* Жанры */}
                         {!isLibrary && (
-                            <p className='book-genres' style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>
+                            <p className='book-genres' style={{ fontSize: '14px', color: '#666' }}>
                                 {genres}
                             </p>
                         )}
 
-                        <p className='book-id'>ID: {book.id}</p>
+                        {/* ID КНИГИ */}
+                        <p className='book-id' style={{ marginTop: '8px' }}>ID: {book.id}</p>
+                    </div>
+                    {/* КОНЕЦ book-info-top */}
 
-                        <div className='book-availability' style={{ marginTop: '10px' }}>
+
+                    {/* 2. ДОСТУПНОЕ КОЛИЧЕСТВО + КНОПКИ (Блок, который будет позиционироваться) */}
+                    <div className='book-availability-wrapper'>
+                        {/* БЛОК КОЛИЧЕСТВА КНИГ */}
+                        <div>
                             {availableCount > 0 ? (
-                                <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#2e7d32' }}>
+                                <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#A8C0A6' }}>
                                     Доступно: {availableCount}
                                 </span>
                             ) : (
@@ -55,35 +67,42 @@ export default function BookCard({ book, availableCount, onUpdate }: BookCardPro
                                 </span>
                             )}
                         </div>
+                        {/* Кнопка для Читателя: рендерится, только если availableCount > 0 */}
+                        {!isLibrary && availableCount > 0 && (
+                            <button
+                                className="btn btn-reserve"
+                            >
+                                Забронировать
+                            </button>
+                        )}
+                        {/* Кнопка для Библиотекаря: рендерится, только если availableCount > 0 */}
+                        {isLibrary && availableCount > 0 && ( // <-- ИЗМЕНЕНО УСЛОВИЕ
+                            <button
+                                className="btn btn-reserve"
+                            >
+                                Выдать
+                            </button>
+                        )}
                     </div>
-
-                    {/* Кнопка для библиотекаря */}
-                    {isLibrary && (
-                        <button
-                            className="btn btn-reserve"
-                            disabled={availableCount === 0}
-                            style={{ marginTop: '15px' }}
-                            // ОТКРЫВАЕМ МОДАЛКУ
-                            onClick={() => setIsIssueModalOpen(true)}
-                        >
-                            {availableCount > 0 ? 'Выдать книгу' : 'Нет экземпляров'}
-                        </button>
-                    )}
+                    {/* КОНЕЦ book-availability-wrapper */}
                 </div>
+
             </article>
 
             {/* Подключаем модалку выдачи */}
-            {isLibrary && (
-                <IssueBookModal
-                    isOpen={isIssueModalOpen}
-                    onClose={() => setIsIssueModalOpen(false)}
-                    book={book}
-                    onSuccess={() => {
-                        // Здесь можно вызвать обновление списка книг, если передали onUpdate
-                        if (onUpdate) onUpdate();
-                    }}
-                />
-            )}
+            {
+                isLibrary && (
+                    <IssueBookModal
+                        isOpen={isIssueModalOpen}
+                        onClose={() => setIsIssueModalOpen(false)}
+                        book={book}
+                        onSuccess={() => {
+                            // Здесь можно вызвать обновление списка книг, если передали onUpdate
+                            if (onUpdate) onUpdate();
+                        }}
+                    />
+                )
+            }
         </>
     );
 }
