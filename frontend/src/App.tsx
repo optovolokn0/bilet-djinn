@@ -10,7 +10,7 @@ import { ProtectedRoute } from "./routes/ProtectedRoutes";
 import EventsPage from "./pages/EventPage";
 import MapPage from "./pages/reader/MapPage";
 import RegisterReaderPage from "./pages/library/RegisterReaderPage";
-import HistoryPage from "./pages/reader/HistoryPage";
+import  ReturnedLoansPage from "./pages/reader/HistoryPage";
 import IssuedBooksPage from "./pages/library/IssuedBooksPage";
 
 export default function App() {
@@ -61,7 +61,7 @@ export default function App() {
           path="/reader/history"
           element={
             <ProtectedRoute role="reader">
-              <HistoryPage />
+              <ReturnedLoansPage />
             </ProtectedRoute>
           }
         />
