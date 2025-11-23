@@ -4,13 +4,14 @@ import "../src/App.css";
 import LoginPage from "./pages/LoginPage";
 import ReaderCatalog from "./pages/reader/ReaderCatalog";
 import LibraryCatalog from "./pages/library/LibraryCatalog";
-import ReaderEvents from "./components/EventsList";
 import ReaderLoansPage from "./pages/reader/ReaderLoansPage";
 
 import { ProtectedRoute } from "./routes/ProtectedRoutes";
 import EventsPage from "./pages/EventPage";
 import MapPage from "./pages/reader/MapPage";
 import RegisterReaderPage from "./pages/library/RegisterReaderPage";
+import HistoryPage from "./pages/reader/HistoryPage";
+import IssuedBooksPage from "./pages/library/IssuedBooksPage";
 
 export default function App() {
   return (
@@ -56,6 +57,15 @@ export default function App() {
           }
         />
 
+         <Route
+          path="/reader/history"
+          element={
+            <ProtectedRoute role="reader">
+              <HistoryPage />
+            </ProtectedRoute>
+          }
+        />
+
 
 
         {/* --- Library routes --- */}
@@ -82,6 +92,15 @@ export default function App() {
           element={
             <ProtectedRoute role="library">
               <RegisterReaderPage/>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/library/issued"
+          element={
+            <ProtectedRoute role="library">
+              <IssuedBooksPage/>
             </ProtectedRoute>
           }
         />
