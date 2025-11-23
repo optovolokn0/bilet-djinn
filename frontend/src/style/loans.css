@@ -267,6 +267,11 @@ img.cover-img,
     color: #d32f2f;
 }
 
+.returned-loans-page .loans-list{
+    display: flex;
+    flex-direction: column;
+}
+
 /* --- Адаптивность --- */
 /* Уменьшение для очень узких экранов (из loans.css) */
 
