@@ -27,7 +27,10 @@ export interface IBookGroup {
   publisher?: string | null;
   year?: number | null;
   description?: string | null;
-  cover_url?: string | null;
+  cover_image?: string | null; // URL для обложки (важно!)
+  copies_count: number; // Общее количество копий
+  available_count: number; // Доступное количество копий (важно!)
+
   age_limit?: number | null;
   created_at: string;
   updated_at: string;
@@ -63,3 +66,57 @@ export interface IRenewRequest {
   new_due_at?: string | null;
   status: 'pending' | 'approved' | 'rejected';
 }
+
+// src/modules/events.ts
+export interface IEvent {
+  id: number;
+  title: string;
+  description: string;
+  start_at: string;
+  duration_minutes: number;
+  capacity: number;
+  cover_url: string;
+  cover_image: string | null;
+  created_by: number;
+  participants_count: number;
+  seats_left: number;
+}
+
+export interface IEventWithAvailability {
+  id: number;
+  title: string;
+  description: string;
+  date_time: string;
+  duration_minutes: number;
+  total_seats: number;
+  booked_seats: number;
+  free_seats: number;
+  is_full: boolean;
+  cover_url?: string;
+  created_by: number;
+  created_at: string;
+  updated_at: string;
+  is_registered?: boolean; // новый флаг для текущего пользователя
+}
+
+
+export interface IEventFromApi {
+  id: number;
+  title: string;
+  description: string;
+  start_at: string;
+  duration_minutes: number;
+  capacity: number;
+  cover_url: string | null;
+  cover_image: string | null;
+  created_by: number;
+  participants_count: number;
+  seats_left: number;
+}
+
+export interface IEventUI extends IEventFromApi {
+  date_time: string;       // дублируем start_at для удобства UI
+  is_full: boolean;
+  is_registered?: boolean; // для текущего пользователя
+}
+

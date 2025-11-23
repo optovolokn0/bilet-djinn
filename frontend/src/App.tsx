@@ -1,59 +1,113 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import '../src/App.css'
-// import Login from './pages/Login';
-import ReaderCatalog from './pages/reader/ReaderCatalog';
-import LibraryCatalog from './pages/library/LibraryCatalog';
-import LoginPage from './pages/LoginPage';
+import { Routes, Route, Navigate } from "react-router-dom";
+import "../src/App.css";
 
+import LoginPage from "./pages/LoginPage";
+import ReaderCatalog from "./pages/reader/ReaderCatalog";
+import LibraryCatalog from "./pages/library/LibraryCatalog";
+import ReaderLoansPage from "./pages/reader/ReaderLoansPage";
 
-// import ReaderBook from './pages/reader/BookPage';
-// import ReaderAccount from './pages/reader/Account';
-// import MyBooks from './pages/reader/MyBooks';
-// import History from './pages/reader/History';
-// import ExtendLoan from './pages/reader/ExtendLoan';
-// import LibraryCatalog from './pages/library/Catalog';
-// import LibraryBook from './pages/library/BookPage';
-// import LibraryReader from './pages/library/Reader';
-// import IssuedCatalog from './pages/library/Issued';
-// import NewBook from './pages/library/NewBook';
-
-// export const auth = {
-//   getUser: () => {
-//     const raw = localStorage.getItem('lib_user');
-//     return raw ? JSON.parse(raw) : null;
-//   },
-//   login: (user: any) => { localStorage.setItem('lib_user', JSON.stringify(user)); },
-//   logout: () => { localStorage.removeItem('lib_user'); }
-// };
-
-// function RequireAuth({ children, role }: { children: JSX.Element; role?: 'reader' | 'library' }) {
-//   const user = auth.getUser();
-//   if (!user) return <Navigate to="/login" replace />;
-//   if (role && user.role !== role) {
-//     return <Navigate to={user.role === 'reader' ? '/reader/catalog' : '/library/catalog'} replace />;
-//   }
-//   return children;
-// }
+import { ProtectedRoute } from "./routes/ProtectedRoutes";
+import EventsPage from "./pages/EventPage";
+import MapPage from "./pages/reader/MapPage";
+import RegisterReaderPage from "./pages/library/RegisterReaderPage";
+import  ReturnedLoansPage from "./pages/reader/HistoryPage";
+import IssuedBooksPage from "./pages/library/IssuedBooksPage";
 
 export default function App() {
   return (
     <main>
       <Routes>
-
+        {/* Login */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Reader */}
-        <Route path="/reader/catalog" element={
-            <ReaderCatalog />
-        } />
-        
+        {/* --- Reader routes --- */}
+        <Route
+          path="/reader/catalog"
+          element={
+            <ProtectedRoute role="reader">
+              <ReaderCatalog />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Library */}
-        <Route path="/library/catalog" element={
-            <LibraryCatalog />
-        } />
+        <Route
+          path="/reader/my-books"
+          element={
+            <ProtectedRoute role="reader">
+              <ReaderLoansPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reader/events"
+          element={
+            <ProtectedRoute role="reader">
+              <EventsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reader/map"
+          element={
+            <ProtectedRoute role="reader">
+              <MapPage />
+            </ProtectedRoute>
+          }
+        />
+
+         <Route
+          path="/reader/history"
+          element={
+            <ProtectedRoute role="reader">
+              <ReturnedLoansPage />
+            </ProtectedRoute>
+          }
+        />
+
+
+
+        {/* --- Library routes --- */}
+        <Route
+          path="/library/catalog"
+          element={
+            <ProtectedRoute role="library">
+              <LibraryCatalog />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/library/events"
+          element={
+            <ProtectedRoute role="library">
+              <EventsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/library/register-reader"
+          element={
+            <ProtectedRoute role="library">
+              <RegisterReaderPage/>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/library/issued"
+          element={
+            <ProtectedRoute role="library">
+              <IssuedBooksPage/>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Default redirect */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </main>
-
   );
 }

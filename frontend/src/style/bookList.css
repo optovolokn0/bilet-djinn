@@ -1,55 +1,78 @@
 /* Контейнер каталога книг */
 .book-catalog {
-    margin-top: 20px;
+    margin: 20px;
     display: flex;
     flex-direction: column;
     gap: 24px;
     /* отступ между поиском и списком */
 }
 
-.book-catalog.title{
+.book-catalog.title {
     margin: 0;
 }
 
-/* Грид списка книг */
-.book-list {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    /* адаптивный грид */
-    gap: 24px;
-    /* расстояние между карточками */
-    justify-content: center;
-    /* центрируем грид */
-}
-
-/* Карточка книги */
 .book-card {
-    height: 425px;
-    width: 200px;
     padding: 12px;
     border-radius: 4px;
     background-color: #fff;
     display: flex;
+    align-items: center;
     flex-direction: column;
-    justify-content: space-between;
     font-weight: normal;
     font-size: 16px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    /* плавный переход */
-    cursor: pointer;
-    /* чтобы показывать интерактивность */
+
+
+    /* ключ, который выравнивает высоту */
+    /* height: 100%; */
+}
+
+.book-list {
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+
+    /* делаем одинаковые строки */
+    align-items: stretch;
+}
+
+.book-container {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    /* растягивается */
+    justify-content: space-between;
+    /* текст сверху, кнопка снизу */
+}
+
+.book-container .container {
+    margin-bottom: 10px;
 }
 
 
 .book-card:hover {
-  transform: scale(1.05); /* немного увеличиваем */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* добавим тень при наведении */
+    transform: scale(1.05);
+    /* немного увеличиваем */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    /* добавим тень при наведении */
 }
 
-.input{
+.input {
     width: 480px;
     padding: 12px 16px;
     border: 2px solid #A8C0A6;
     border-radius: 15px;
     font-family: 'Mulish';
-} 
+}
+
+.input:focus {
+    outline: none;
+}
+
+.book-availability-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

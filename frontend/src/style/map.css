@@ -1,0 +1,22 @@
+/* карта */
+.map-page {
+  padding: 24px;
+}
+
+.map-image {
+  display: block;
+  width: 90%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.map-legend {
+  margin: 0;
+  padding-left: 20px;
+  color: #333;
+}
+
+.btn.active {
+  background-color: #0b5a2b; /* тёмно-зелёный для активной кнопки (если используешь .btn.active) */
+  color: white;
+}
