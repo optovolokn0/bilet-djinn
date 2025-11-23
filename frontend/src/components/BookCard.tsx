@@ -75,7 +75,7 @@ export default function BookCard({ book, availableCount, onUpdate }: BookCardPro
                                 className="btn btn-reserve"
                                 onClick={() => setIsIssueModalOpen(true)}
                             >
-                                Выдать
+                                Выдать 
                             </button>
                         )}
                     </div>
