@@ -113,7 +113,7 @@ export default function Header() {
               <Link to="/library/events" className="nav-item">Мероприятия</Link>
               <Link to="/library/issued" className="nav-item">Выданные книги</Link>
               <Link to="/library/new-book" className="nav-item" onClick={handleOpenModal}>Добавить книгу</Link>
-              <Link to="/library/reg-reader" className="nav-item">Регистрация читателя</Link>
+              <Link to="/library/register-reader" className="nav-item">Регистрация читателя</Link>
             </>
           )}
         </div>
