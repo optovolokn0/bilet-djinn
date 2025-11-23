@@ -8,7 +8,7 @@ export function ProtectedRoute({
   role
 }: {
   children: JSX.Element;
-  role?: "reader" | "library";
+  role?: "reader" | "library" | 'admin';
 }) {
   const user = useAppSelector((s) => s.auth.user);
   const dispatch = useAppDispatch();

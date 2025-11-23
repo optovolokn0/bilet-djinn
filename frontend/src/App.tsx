@@ -14,6 +14,8 @@ import ReturnedLoansPage from "./pages/reader/HistoryPage";
 import IssuedBooksPage from "./pages/library/IssuedBooksPage";
 import RenewRequestsPage from "./pages/library/RenewRequestsPage";
 import RecommendedCatalog from "./pages/reader/RecommendedCatalog";
+import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminUsersPage from "./pages/AdminUsersPage";
 
 
 export default function App() {
@@ -22,6 +24,18 @@ export default function App() {
       <Routes>
         {/* Login */}
         <Route path="/login" element={<LoginPage />} />
+
+        <Route path="/admin/login" element={<AdminLoginPage />} />
+        
+        <Route
+          path="/admin/users"
+          element={
+            // Важно: Убедитесь, что ProtectedRoute поддерживает role="admin"
+            // <ProtectedRoute role="admin">
+              <AdminUsersPage />
+            // </ProtectedRoute>
+          }
+        />
 
         {/* --- Reader routes --- */}
         <Route

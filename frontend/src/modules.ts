@@ -1,4 +1,5 @@
-export type UserRole = 'reader' | 'library';
+// 1. Добавляем 'admin' в UserRole
+export type UserRole = 'reader' | 'library' | 'admin';
 
 export interface IUser {
   id: number;
@@ -6,12 +7,38 @@ export interface IUser {
   username: string | null;
   first_name: string | null;
   last_name: string | null;
-  password: string;
+  password?: string; // Делаем необязательным, так как при получении списка хеш может не приходить или не нужен
   email: string | null;
   phone: string | null;
-  birth_date: string | null; // ISO date
-  created_at: string;
-  updated_at: string;
+  birth_date: string | null;
+  created_at?: string;
+  updated_at?: string;
+  // Поля, специфичные для читателя, которые могут прийти
+  ticket_number?: string;
+  contract_number?: string;
+}
+
+// Тип для создания Библиотекаря
+export interface ICreateLibrarianPayload {
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  birth_date: string;
+  password: string;
+  role: 'library';
+}
+
+// Тип для создания Читателя
+export interface ICreateReaderPayload {
+  ticket_number: string;
+  contract_number: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  birth_date: string;
+  role: 'reader';
 }
 
 export interface IAuthor { id: number; name: string; }
