@@ -67,14 +67,8 @@ export default function BookCard({ book, availableCount, onUpdate }: BookCardPro
                                 </span>
                             )}
                         </div>
-                        {/* Кнопка для Читателя: рендерится, только если availableCount > 0 */}
-                        {!isLibrary && availableCount > 0 && (
-                            <button
-                                className="btn btn-reserve"
-                            >
-                                Забронировать
-                            </button>
-                        )}
+
+                
                         {/* Кнопка для Библиотекаря: рендерится, только если availableCount > 0 */}
                         {isLibrary && availableCount > 0 && ( // <-- ИЗМЕНЕНО УСЛОВИЕ
                             <button
