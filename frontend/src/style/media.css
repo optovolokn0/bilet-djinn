@@ -33,6 +33,11 @@
         width: 250px;
     }
 
+    .event-text{
+        font-weight: normal;
+        font-size: 14px;
+    }
+
     .search-input-wrapper {
         max-width: 200px;
     }
@@ -84,6 +89,15 @@
         font-weight: normal;
         font-size: 12px;
     }
+
+    .box{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .event-img {
+        width: 150px;
+    }
 }
 
 @media (max-width: 400px){
@@ -99,4 +113,37 @@
         margin: 0;
         font-size: 12px;
     }
+
+    .event-card{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .event-img {
+        width: 100%;
+    }
+
+    .event-text{
+        width: 100%;
+        align-items: center;
+    }
+
+    .btns-container{
+        width: 100%;
+        justify-content: center;
+    }
+
+    .event-btn{
+        width: 100%;
+    }
+
+    .event-title{
+        margin: 5px 0;
+    }
+
+    .event-subtext{
+        margin-bottom: 15px;
+    }
+
 }

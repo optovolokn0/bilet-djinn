@@ -231,9 +231,9 @@ export default function EventsPage() {
 
     return (
         <div className="events-page">
-            <h2 className="events-title">Мероприятия</h2>
+            <h2 className="events-title title">Мероприятия</h2>
 
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
+            <div className='box'>
                 <div style={{ display: 'flex', gap: 8 }}>
                     {isReader && (
                         <>
