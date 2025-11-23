@@ -4,9 +4,9 @@
     padding: 5px 40px;
     height: 60px;
     background-color: #A8C0A6;
-    position: sticky; 
+    position: sticky;
     top: 0;
-    z-index: 999; 
+    z-index: 999;
     width: 100%;
     box-sizing: border-box;
 }
@@ -67,9 +67,13 @@
     color: #d32f2f;
 }
 
-.burger-btn {
+.burger {
     cursor: pointer;
     margin-right: 15px;
+}
+
+.burger:hover {
+    transform: scale(1.05);
 }
 
 .mobile-menu {
@@ -101,7 +105,21 @@
     color: white;
     font-size: 18px;
     text-decoration: none;
-    padding: 10px 0;
+    padding: 10px 15px;
+    /* Добавлено горизонтальное заполнение для красивого фона */
+    border-radius: 4px;
+    /* Немного закруглим углы */
+
+    /* 1. Добавляем плавный переход для фона и цвета текста */
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: block;
+    /* Важно, чтобы padding и background работали на всю ширину */
+}
+
+.mobile-nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    transform: scale(1.02);
 }
 
 .mobile-divider {

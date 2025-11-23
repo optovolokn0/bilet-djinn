@@ -23,8 +23,7 @@
 
 
 /* Заголовки */
-.page-title,
-.loans-title {
+.page-title{
     font-size: 28px;
     margin: 8px 0 16px;
     color: #0f5132;
@@ -33,6 +32,7 @@
 
 .loans-title {
     margin: 0;
+    color: black;
 }
 
 /* Текстовые состояния */
