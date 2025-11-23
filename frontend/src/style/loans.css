@@ -7,7 +7,7 @@
 .returned-loans-page,
 .issued-books-page,
 .loans-page {
-    padding: 16px;
+    padding: 20px;
     margin: 20px 0;
     /* из loans-page */
     display: flex;
@@ -15,6 +15,12 @@
     gap: 24px;
     /* из loans-page */
 }
+
+.loans-page {
+    margin: 0;
+}
+
+
 
 /* Заголовки */
 .page-title,
@@ -26,8 +32,7 @@
 }
 
 .loans-title {
-    /* на случай, если где-то используется .loans-title */
-    margin: 0 0 16px;
+    margin: 0;
 }
 
 /* Текстовые состояния */
@@ -42,9 +47,13 @@
 
 /* Список займов */
 .loans-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+
+    /* делаем одинаковые строки */
+    align-items: stretch;
 }
 
 /* --- Карточка займа (унифицировано) --- */
